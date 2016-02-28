@@ -1,0 +1,545 @@
+{
+  "canvasId": 214322,
+  "liveStatsEnabled": false,
+  "servicesUrl": "http://canvas-services.adtech.de/",
+  "dynamic": false,
+  "templateId": 212253,
+  "productFamilyId": 0,
+  "formatId": 4,
+  "servicesHosts": {
+    "http": "http://ads.pictela.net/",
+    "https": "https://secure-ads.pictela.net/",
+    "post": "https://origin-ads.pictela.net/"
+  },
+  "adServerVars": {
+    "uid": "1456346254660",
+    "id": "214322",
+    "bannerId": "_ADBNID_",
+    "bannerUid": "_ADBNUID_",
+    "networkId": "_ADNETID_",
+    "subNetworkId": "_ADSUBNETID_",
+    "creativeId": "0",
+    "pageId": "_ADFC_PAGEID_",
+    "placementId": "_ADCUID_",
+    "adSize": "_ADFC_ADSIZE_",
+    "servingProto": "http",
+    "servingHost": "_ADVIRHOST_",
+    "sequenceId32": "_ADREFSEQUENCEID32_",
+    "sequenceId64": "_ADREFSEQUENCEID64_",
+    "secureAssetHost": "https://secure-ads.pictela.net/",
+    "configBaseURL": "_ADPATH_",
+    "assetBaseURL": "{{tokens.assetsURL}}",
+    "baseURL": "_ADPATH_",
+    "viewCounter": "_ADCOUNT_",
+    "campaignId": "_ADMCID_",
+    "publisherId": "_ADWEBSITEID_"
+  },
+  "geoData": {
+    "area": "_ADAREATEXT_",
+    "city": "_ADCITYTEXT_",
+    "country": "_ADCOUNTRYTEXT_",
+    "state": "_ADSTATETEXT_",
+    "zip": "_ADZIPTEXT_"
+  },
+  "tagVars": {},
+  "preview": true,
+  "pubVars": {
+    "clickPixel": "",
+    "iframeBusterPath": "",
+    "clickRedirect": "",
+    "overflowFixLevel": "0",
+    "viewCountUrl": "",
+    "overrideX": "",
+    "overrideY": "",
+    "closeTimeout": "0"
+  },
+  "clickRedirect": "",
+  "assetContainers": {
+    "main": {
+      "type": "floatingDiv",
+      "width": 320,
+      "height": 480,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "contentWidthUnit": "%",
+      "contentHeightUnit": "%",
+      "xRel": "pageLeft",
+      "yRel": "pageTop",
+      "x": 0,
+      "y": 0,
+      "renderEvent": "serve",
+      "content": "{{mainFile}}",
+      "contentType": "html",
+      "zIndex": 99999,
+      "wmode": "transparent",
+      "pluginVersion": 0.0,
+      "contractedY": 0,
+      "contractedX": 0,
+      "contractedWidth": 320,
+      "contractedHeight": 480,
+      "isExpandable": true,
+      "startContracted": false,
+      "stickyX": true,
+      "stickyY": true,
+      "pushesContent": false,
+      "expandAnimationDuration": 0,
+      "contractAnimationDuration": 0,
+      "closeTimeout": 15,
+      "modal": false,
+      "sequence": 1,
+      "iframeBuster": "",
+      "langVersion": 0
+    }
+  },
+  "clickthroughs": {
+    "default": {
+      "id": 1575,
+      "plid": 11565212,
+      "dest": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;n",
+      "target": "_blank",
+      "features": ""
+    },
+    "backupImageClickthrough": {
+      "id": 8069,
+      "plid": 11565215,
+      "dest": "",
+      "target": "_blank",
+      "features": ""
+    },
+    "Clickthrough": {
+      "id": 19375,
+      "plid": 11565218,
+      "dest": "",
+      "target": "_blank",
+      "features": ""
+    }
+  },
+  "contentVariables": {
+    "QRUrl": "http://aol.it/1Qc4X0e"
+  },
+  "contentProperties":  {{contentProperties}} ,
+  "dataFeeds": {},
+  "screenGrabs": {},
+  "polls": {},
+  "assets": [{
+    "id": null,
+    "name": "expandableVideo.js",
+    "url": "expandableVideo.js"
+  }, {
+    "id": null,
+    "name": "customAd.js",
+    "url": "customAd.js"
+  }, {
+    "id": "main",
+    "name": "expandableVideo.html",
+    "url": "expandableVideo.html"
+  }, {
+    "id": null,
+    "name": "Pictela_Premium_Summer.webmsd.webm",
+    "url": "Pictela_Premium_Summer.webmsd.webm"
+  }, {
+    "id": null,
+    "name": "Pictela_Premium_Summer.mp4",
+    "url": "Pictela_Premium_Summer.mp4"
+  }, {
+    "id": null,
+    "name": "300x180_play_video.png",
+    "url": "300x180_play_video.png"
+  }, {
+    "id": null,
+    "name": "closeButton_100x100.png",
+    "url": "closeButton_100x100.png"
+  }, {
+    "id": null,
+    "name": "customUi.json",
+    "url": "customUi.json"
+  }, {
+    "id": null,
+    "name": "Performagroup/Expandable Pushdown/320x150.jpg",
+    "url": "Performagroup/Expandable Pushdown/320x150.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/Expandable Pushdown/320x50.jpg",
+    "url": "Performagroup/Expandable Pushdown/320x50.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/320x480.jpg",
+    "url": "Performagroup/video interstitial/320x480.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/320x568.jpg",
+    "url": "Performagroup/video interstitial/320x568.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/Kadjar_10_OPO_070116.mp4",
+    "url": "Performagroup/video interstitial/Kadjar_10_OPO_070116.mp4"
+  }, {
+    "id": null,
+    "name": "320x480.jpg",
+    "url": "320x480.jpg"
+  }, {
+    "id": null,
+    "name": "Kadjar_10_OPO_070116.mp4",
+    "url": "Kadjar_10_OPO_070116.mp4"
+  }],
+  "events": [{
+    "id": 0,
+    "plid": 31245059,
+    "name": "engagement",
+    "cumulative": false,
+    "interaction": true,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245062,
+    "name": "interactiveImpression",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245065,
+    "name": "viewableImpression",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245068,
+    "name": "indeterminableViewability",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245071,
+    "name": "close",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245074,
+    "name": "expand",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245077,
+    "name": "contract",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245092,
+    "name": "Video Video Play",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245095,
+    "name": "Video Video Start",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245098,
+    "name": "Video Video First Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245101,
+    "name": "Video Video Midpoint",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245104,
+    "name": "Video Video Third Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245107,
+    "name": "Video Video Complete",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245110,
+    "name": "Video Video Mute",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245113,
+    "name": "Video Video Unmute",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245116,
+    "name": "Video Video Pause",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245119,
+    "name": "Video Video Replay",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245122,
+    "name": "Video Video Resume",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245125,
+    "name": "Video Video Seek",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245128,
+    "name": "Video Video Fullscreen",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245134,
+    "name": "stateChange",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245137,
+    "name": "Video Play",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245140,
+    "name": "Video Start",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245143,
+    "name": "Video First Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245146,
+    "name": "Video Midpoint",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245149,
+    "name": "Video Third Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245152,
+    "name": "Video Complete",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245155,
+    "name": "Video Mute",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245158,
+    "name": "Video Unmute",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245161,
+    "name": "Video Pause",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245164,
+    "name": "Video Replay",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245167,
+    "name": "Video Resume",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245170,
+    "name": "Video Seek",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245173,
+    "name": "Video Fullscreen",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }],
+  "timers": [{
+    "id": 0,
+    "plid": 31245080,
+    "name": "displayTimer"
+  }, {
+    "id": 0,
+    "plid": 31245083,
+    "name": "viewTimer"
+  }, {
+    "id": 0,
+    "plid": 31245086,
+    "name": "engagementTimer"
+  }, {
+    "id": 0,
+    "plid": 31245089,
+    "name": "interactionTimer"
+  }, {
+    "id": 0,
+    "plid": 31245131,
+    "name": "Video Video View"
+  }, {
+    "id": 0,
+    "plid": 31245176,
+    "name": "Video View"
+  }],
+  "eventHandlers": [{
+    "name": "expand",
+    "target": "main",
+    "source": "main",
+    "action": "expand"
+  }, {
+    "name": "contract",
+    "target": "main",
+    "source": "main",
+    "action": "contract"
+  }, {
+    "name": "close",
+    "target": "main",
+    "source": "main",
+    "action": "close"
+  }],
+  "thirdPartyTracking": [{
+    "id": 82181,
+    "type": "1_PIXEL",
+    "url": "https://ad.doubleclick.net/ddm/ad/N5648.286065.PERFORMGROUP/B9330869.127005073;sz=1x1;ord=1456346254660;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=?\" BORDER=0 WIDTH=1 HEIGHT=1 ALT=",
+    "secureUrl": "",
+    "onEvent": "VIEW",
+    "eventName": ""
+  }],
+  "contentHubConfig": {
+    "mapping": {},
+    "assets": {}
+  }
+}

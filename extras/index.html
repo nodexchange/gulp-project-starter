@@ -1,0 +1,66 @@
+<!-- canvasSize:320x480 -->
+<!--{{tokens.Copyrights}}-->
+<!--canvasSize:{{tokens.size}}-->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>MRAID - Expandable Video</title>
+    <meta charset="UTF-8">
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="test">
+      <script type='text/javascript'>
+        adtechCanvasAdPreview = true;
+        var com = com || {};
+        com.adtech = com.adtech || {};
+        com.adtech.debugLogger_2_53_3 = com.adtech.debugLogger;
+
+        var adtechAdConfig =  @@include('./extras/adConfig.json');
+        adtechAdConfig.preview = true;
+        adtechAdConfig.overrides = adtechAdConfig.overrides || {};
+        adtechAdConfig.overrides["displayWindowTarget"] = self;
+        @@include('./extras/customAd.js');
+        (function(D) {
+          if (!D.initOverride) {
+            var B = "{{tokens.rmURL}}";
+            if (D.adServerVars.servingProto === "https") {
+              var E = ["baseURL", "assetBaseURL"];
+              for (var C = 0; C < E.length; C++) {
+                var G = D.adServerVars[E[C]];
+                if (G) {
+                  D.adServerVars[E[C]] = G.replace(/^http:\/\/[-a-z0-9\.]*\//i, "https://secure-ads.pictela.net/")
+                }
+              }
+              B = "https://secure-ads.pictela.net/rm/lib/richmedia/"
+            }
+            var H = (D.mraidCompatible) ? "MRAID" : "";
+            var F = B + "adtechRichMediaLib" + H + "_2_53_3.js";
+            D.rmLibUrl = F;
+            if (!window.adtechAdManager_2_53_3) {
+              adtechAdQueue = window.adtechAdQueue || [];
+              adtechAdQueue.push(D);
+              if (!window.adtechAdManagerReqs || !window.adtechAdManagerReqs["2_53_3"]) {
+                adtechAdManagerReqs = window.adtechAdManagerReqs || {};
+                adtechAdManagerReqs["2_53_3"] = true;
+                var A = "scr";
+                document.write("<" + A + 'ipt type="text/javascript" src="' + F + '"></' + A + "ipt>")
+              }
+            } else {
+              adtechAdManager_2_53_3.registerAd(D)
+            }
+          }
+        })(adtechAdConfig);
+      </script>
+    </div>
+  </body>
+</html>

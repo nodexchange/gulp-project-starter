@@ -1,0 +1,50 @@
+{
+  "name": "gulp-starter-kit",
+  "description": "Build webapps on node js with performances optimization, browser sync, less and sass support",
+  "version": "0.3.4",
+  "author": "Riccardo Caroli <beaver82@gmail.com> (http://www.minimit.com/)",
+  "keywords": [
+    "gulp",
+    "starter",
+    "template",
+    "boilerplate"
+  ],
+  "license": {
+    "type": "MIT",
+    "url": "https://github.com/minimit/gulp-starter-kit/blob/master/LICENSE"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/minimit/gulp-starter-kit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/minimit/gulp-starter-kit/issues"
+  },
+  "devDependencies": {
+    "browser-sync": "^2.11.1",
+    "del": "^2.2.0",
+    "gulp": "^3.8.8",
+    "gulp-cache": "^0.4.2",
+    "gulp-changed": "^1.0.0",
+    "gulp-clean-css": "^2.0.2",
+    "gulp-concat": "^2.4.2",
+    "gulp-file-includer": "^1.0.0",
+    "gulp-ftp": "^1.0.1",
+    "gulp-if": "^2.0.0",
+    "gulp-imagemin": "^2.4.0",
+    "gulp-jshint": "^2.0.0",
+    "gulp-rename": "^1.2.0",
+    "gulp-sass": "^2.2.0",
+    "gulp-sourcemaps": "^1.2.8",
+    "gulp-token-replace": "^1.0.3",
+    "gulp-uglify": "^1.0.2",
+    "jshint": "^2.9.1",
+    "jshint-stylish": "^2.1.0",
+    "run-sequence": "^1.0.1",
+    "vinyl-paths": "^2.1.0"
+  },
+  "engines": {
+    "node": ">= 0.10.0"
+  },
+  "dependencies": {}
+}

@@ -1,0 +1,15 @@
+{
+    "rules": [
+        {
+            "show": [
+                "CONTENT_PROPERTIES['Video Player']"
+            ],
+            "when": [
+                {
+                    "property": "CONTENT_PROPERTIES['Enable Video Player']",
+                    "equals": true
+                }
+            ]
+        }
+    ]
+}

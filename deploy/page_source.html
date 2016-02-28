@@ -1,0 +1,1640 @@
+<!-- canvasSize:320x480 -->
+<!--Copyright 2010-2014 AOL Platforms.-->
+<!--canvasSize:320x50-->
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <title>MRAID - Expandable Video</title>
+    <meta charset="UTF-8">
+    <style>
+      html,
+      body {
+        margin: 0;
+        padding: 0;
+        background: #ccc;
+      }
+    </style>
+  </head>
+  <body>
+
+    <iframe>
+      <html><script id="tinyhippos-injected">if (window.top.ripple) { window.top.ripple("bootstrap").inject(window, document); }</script><head>
+          <meta http-equiv="X-UA-Compatible" content="IE=edge">
+          <meta name="viewport" content="initial-scale=1.0">
+          <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+
+          <link href="https://fonts.googleapis.com/css?family=Open+Sans:600,400" rel="stylesheet" type="text/css">
+
+          <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+          <script>jQuery.noConflict();</script>
+          <script type="text/javascript" src="/js/qrcode.min.js?v=1"></script>
+
+          <script type="text/javascript">
+            var com = com || {};
+            com.adtech = com.adtech || {};
+          </script>
+
+      <script type="text/javascript">
+        var com = {}
+        com.adtech = {}
+        com.adtech.debugLogger = function() {
+          this.pixelRequests = [];
+          this.eventsToIgnore = ['viewableImpression', 'indeterminableViewability',
+                                 'backupViewableImpression'];
+        }
+
+        com.adtech.debugLogger.EVENT_OUTPUT_PREFIX = 'Event: ';
+        com.adtech.debugLogger.CLICK_OUTPUT_PREFIX = 'Click: ';
+
+        /**
+         * All event objects will have the following properties:
+         * - eventName
+         * - adId
+         * - eventId
+         * - thirdPartyUrl [optional]
+         * - clickName [optional]
+         * - host
+         * - bannerId
+         * - networkId
+         * - creativeId
+         * - version
+         * - placementId
+         * - size
+         */
+        com.adtech.debugLogger.prototype.log = function(event) {
+          if (!this.eventBin) {
+            this.eventBin = {};
+          }
+          if (!this.eventBin[event.adId]) {
+            this.eventBin[event.adId] = [];
+          }
+          this.eventBin[event.adId].push(event);
+          if (typeof event.thirdPartyUrl != 'undefined') {
+            this.performRequest(event.thirdPartyUrl);
+            return;
+          } else if (typeof event.timeElapsed != 'undefined'
+              || typeof event.timerEvent != 'undefined') {
+            // Ignore timer events.
+            return;
+          } else if (this.shouldIgnoreEvent(event)) {
+            return;
+          }
+          var prefix = (typeof event.clickName != 'undefined') ?
+              com.adtech.debugLogger.CLICK_OUTPUT_PREFIX :
+              com.adtech.debugLogger.EVENT_OUTPUT_PREFIX;
+          this.displayEvent(this.getEventId(event), prefix + this.getReportLabel(event));
+        }
+
+        com.adtech.debugLogger.prototype.getEventId = function(event) {
+           var event_id = event.adId;
+           if(typeof event.currentTarget != 'undefined') {
+             event_id = event.currentTarget.id;
+          }
+          return event_id;
+        }
+
+        com.adtech.debugLogger.prototype.getReportLabel = function(event) {
+          return (typeof event.clickName != 'undefined') ?
+              adtechClickthroughs[this.getEventId(event)][event.clickName] :
+              adtechEvents[this.getEventId(event)][event.eventName];
+        }
+
+        com.adtech.debugLogger.prototype.performRequest = function(url) {
+          var idx = this.pixelRequests.length;
+          this.pixelRequests[idx] = new Image();
+          this.pixelRequests[idx].src = url;
+        }
+
+        com.adtech.debugLogger.prototype.displayEvent = function(adId, displayMessage) {
+          try {
+            parent.parent.addEventMessageByAdId(adId, displayMessage);
+          } catch (e) {
+          }
+        }
+
+        com.adtech.debugLogger.prototype.shouldIgnoreEvent = function(event) {
+          if (typeof event.eventName != 'undefined') {
+            for (var i = 0; i < this.eventsToIgnore.length; i++) {
+              if (this.eventsToIgnore[i] == event.eventName) {
+                return true;
+              }
+            }
+          }
+          if (event.category) {
+            switch (event.category) {
+              case 'durationStart':
+              case 'durationEnd':
+              return true;
+            }
+          }
+          if (typeof event.adrData == 'object' || typeof event.dcoData == 'object') {
+            return true;
+          }
+          return false;
+        }
+
+            com.adtech.debugLogger_2_53_3 = com.adtech.debugLogger;
+
+        //Child pages can write out their events to the parent for their respective ids
+        var adtechEvents = {};
+        var adtechClickthroughs = {};
+      </script>
+
+          <script type="text/javascript">
+        com.adtech.Utils = {};
+        com.adtech.Utils.createClosure = function(target, handler) {
+          var extraArgs = [].slice.call(arguments, 2);
+          var delegate = function() {
+            var self = arguments.callee;
+            var callbackArgs = [].slice.call(arguments);
+            var fullArgs = self.extraArgs.concat(callbackArgs, [self]);
+            return self.handler.apply(self.target, fullArgs);
+          }
+
+          delegate.extraArgs = extraArgs;
+          delegate.target = target;
+          delegate.handler = handler;
+
+          return delegate;
+        }
+        com.adtech.AdPreviewCallbackHandler = function() {}
+
+        com.adtech.AdPreviewCallbackHandler.prototype.init = function(advert) {
+          this.advert = advert;
+          this.adReadyHandler();
+          this.positionAd();
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.positionAd = function() {
+          if (typeof com.adtech.AdPreviewPositioner != 'undefined') {
+            new com.adtech.AdPreviewPositioner(this.advert).init();
+          }
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.adReadyHandler = function() {
+          var utils = com.adtech.Utils;
+          var floatHandler = utils.createClosure(this, this.floatEventHandler);
+          var adPositioningHandler = utils.createClosure(this, this.positionAd)
+          var closeHandler = utils.createClosure(this, this.closeEventHandler);
+          var liveUpdateHandler = utils.createClosure(this, this.liveUpdateEventHandler);
+          this.advert.eventBus.addEventListener('close', closeHandler);
+          if (!this.advert.rendered) {
+            this.advert.addEventListener('render', liveUpdateHandler);
+          } else {
+            this.fireLiveUpdateEvents();
+          }
+          var mainAssetContainer = this.advert.getAssetContainer('main');
+          mainAssetContainer.addEventListener('render', floatHandler);
+          mainAssetContainer.addEventListener('render', adPositioningHandler);
+          mainAssetContainer.globalEventBus.addEventListener('pageScroll', floatHandler);
+          mainAssetContainer.globalEventBus.addEventListener('pageResize', floatHandler);
+          window['contentWidth'] = mainAssetContainer.contentWidth;
+          window['contentHeight'] = mainAssetContainer.contentHeight;
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.fireLiveUpdateEvents = function(e) {
+          if (typeof parent.liveUpdateEvents != 'undefined') {
+            var liveUpdateEvents = parent.liveUpdateEvents;
+            for (var i = 0; i < liveUpdateEvents.length; i++) {
+              liveUpdateEvents[i](true);
+            }
+          }
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.floatEventHandler = function(e) {
+          var container = this.advert.getAssetContainer('main');
+          if (container.div != null) {
+            this.followAdDiv(container.div.style.left, container.div.style.top);
+          }
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.closeEventHandler = function(e) {
+          var adLabel = document.getElementById("adLabel-" + this.advert.id);
+          if (adLabel != null) {
+            adLabel.className += " ad-label-hidden";
+          }
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.liveUpdateEventHandler = function(e) {
+          this.fireLiveUpdateEvents();
+        }
+
+        com.adtech.AdPreviewCallbackHandler.prototype.followAdDiv = function(x, y) {
+          if (this.advert.getAssetContainer('main').constructor.toString().indexOf('FloatingDivContainer') != -1) {
+            var adLabel = document.getElementById("adLabel-" + this.advert.id);
+            if (adLabel != null) {
+              adLabel.className = adLabel.className.replace( /(?:^|\s)ad-label-hidden(?!\S)/ , '');
+              adLabel.style.position = 'absolute';
+              adLabel.style.top = (parseInt(y) - 30) + "px";
+              adLabel.style.left = x;
+              adLabel.style.zIndex = "100000";
+            }
+          } else {
+            var globalEventBus = this.advert.getAssetContainer('main').globalEventBus;
+            globalEventBus.removeEventListener('pageScroll', this.floatEventHandler);
+            globalEventBus.removeEventListener('pageResize', this.floatEventHandler);
+          }
+        }
+          </script>
+
+        <script type="text/javascript">
+          com.adtech.AdPreviewPositioner = function(advert) {
+            this.logging = false;
+            this.advert = advert;
+            this.adContainerDiv = false;
+            this.inlineDiv = false;
+            this.adDivs = [];
+            this.maxOffsetLeft = 0;
+            this.maxOffsetRight = 0;
+            this.maxOffsetTop = 0;
+          };
+
+          com.adtech.AdPreviewPositioner.prototype = {
+            init : function() {
+              this.positionAd();
+              this.makeSpaceForAd();
+            },
+
+            positionAd : function() {
+              this.adContainerDiv = document.getElementById("adPos-" + this.advert.id);
+              var inlineDiv = false;
+              // analyse any divs relative to ad slot as these are only ones we care about
+              if (typeof com.adtech.SideKick == 'undefined') {
+                var acs = this.advert.assetContainers;
+                for (ac in acs) {
+                  this.log("ac = " + ac);
+                  var adDiv = acs[ac];
+                  this.adDivs.push(adDiv);
+                  if (adDiv.type == "inlineDiv") {
+                    this.inlineDiv = adDiv;
+                  }
+                }
+
+                if (this.inlineDiv) {
+                  for (adDiv in this.adDivs) {
+                    var ad = this.adDivs[adDiv];
+                    if (ad.xRel == "adSlotLeft") {
+                      this.log(ad.x);
+                      if (ad.x < 0) {
+                        if (ad.x < this.maxOffsetLeft) {
+                          this.maxOffsetLeft = ad.x;
+                          this.log("maxOffsetLeft = " + this.maxOffsetLeft);
+                        }
+                      } else {
+                        if ((ad.x + ad.contentWidth) > this.maxOffsetRight) {
+                          this.maxOffsetRight = ad.x + ad.contentWidth;
+                          this.log("maxOffsetRight = " + this.maxOffsetRight);
+                        }
+                      }
+                    }
+                    if (ad.yRel == "adSlotTop" && ad.y < 0) {
+                      this.maxOffsetTop = -ad.y;
+                    }
+                  }
+                  this.positionAdContainer();
+                  var resizeHandler = com.adtech.Utils.createClosure(this, this.positionAdContainer);
+                  try {
+                    addEventListener("resize", resizeHandler, false);
+                  } catch(e) {
+                    document.attachEvent("onresize", resizeHandler);
+                  }
+                }
+              }
+            },
+
+            getPageWidth : function() {
+              var w = 0;
+              if(!window.innerWidth) {
+                if(!(document.documentElement.clientWidth == 0)) {
+                  w = document.documentElement.clientWidth;
+              } else {
+                  w = document.body.clientWidth;
+              }
+              } else {
+                w = window.innerWidth;
+              }
+              return w;
+            },
+
+            log : function(msg) {
+              if (this.logging) {
+                if (window.console && window.console.log) {
+                  window.console.log(msg);
+                }
+              }
+            },
+
+            positionAdContainer : function() {
+              if (this.getAdCount() > 1) {
+                return;
+              }
+              var xFactor = 10;
+              var pageWidth = this.getPageWidth();
+              var pageCentre = pageWidth / 2;
+              var halfAdWidth = this.inlineDiv.width / 2;
+              this.log("pageCentre = " + pageCentre);
+              var nudgeFactor = 0;
+              this.log('pagewidth = ' + pageWidth);
+              this.log('this.maxOffsetLeft = ' + this.maxOffsetLeft);
+               this.log('this.maxOffsetRight = ' + this.maxOffsetRight);
+              if ((-this.maxOffsetLeft + this.maxOffsetRight) > pageWidth) {
+                this.log("Can't fit all on page");
+                var offsetDirection = this.maxOffsetLeft + this.maxOffsetRight;
+                if (offsetDirection > 0) {
+                  nudgeFactor = -(pageCentre - halfAdWidth);
+                  this.log("more on right");
+                } else if (offsetDirection < 0) {
+                  nudgeFactor = pageCentre - halfAdWidth;
+                  this.log("more on left");
+                }
+              } else if (-this.maxOffsetLeft + halfAdWidth > pageCentre) {
+                nudgeFactor = -this.maxOffsetLeft + halfAdWidth - pageCentre;
+                if ((pageCentre + halfAdWidth + nudgeFactor) > pageWidth) {
+                  nudgeFactor = pageCentre - halfAdWidth;
+                }
+                nudgeFactor += xFactor;
+                this.log("nudging right: " + nudgeFactor);
+              } else if ((pageCentre - halfAdWidth + this.maxOffsetRight) > pageWidth) {
+                nudgeFactor = pageWidth - (pageCentre - halfAdWidth + this.maxOffsetRight);
+                this.log("nudging left" + nudgeFactor);
+                this.log('halfAdWidth = ' + halfAdWidth);
+                nudgeFactor -= xFactor;
+              }
+              this.adContainerDiv.style.left = Math.floor(nudgeFactor) + "px";
+              if(this.maxOffsetTop) {
+                this.adContainerDiv.style.top = this.maxOffsetTop + "px";
+              }
+            },
+
+            getAdCount : function() {
+              return 1;
+            },
+
+            makeSpaceForAd : function() {
+              if (this.inlineDiv) {
+                var maximumHeight = 0;
+                var maximumWidth = 0;
+                var marginLeft = 0;
+                var marginTop = 0;
+                var inpageWidth = 0;
+                var inpageHeight = 0;
+                var adContentEle = document.getElementById("adContent-" + this.advert.id);
+                for (adDiv in this.adDivs) {
+                  var ad = this.adDivs[adDiv];
+                  //if (ad.isExpandable == true) {
+                    if (this.getAdCount() > 1) {
+                      adContentEle.style.border = "1px solid #EAEAEA";
+                    }
+                  //}
+                  if (ad.type == "inlineDiv") {
+                    inpageWidth = ad.width;
+                    inpageHeight = ad.height;
+                  }
+                  if (ad.contentWidth > maximumWidth) {
+                    maximumWidth = ad.contentWidth;
+                  }
+                  if (ad.contentHeight > maximumHeight) {
+                    maximumHeight = ad.contentHeight;
+                  }
+                  if (ad.xRel == "adSlotLeft") {
+                    if (ad.x < 0) {
+                      if (ad.x < marginLeft) {
+                        marginLeft = -ad.x;
+                      }
+                    }
+                  }
+                  if (ad.yRel == "adSlotTop" && ad.y < 0) {
+                    marginTop = -ad.y;
+                  }
+                  if (this.adDivs.length > 1 && ad.type != "inlineDiv") {
+                    if (ad.xRel == "adSlotLeft") {
+                      if (ad.x < 0) {
+                        if ((inpageWidth - ad.x) > maximumWidth) {
+                          maximumWidth = inpageWidth - ad.x;
+                        }
+                      } else {
+                        if ((ad.x + maximumWidth) > inpageWidth) {
+                          maximumWidth = ad.x + maximumWidth;
+                        }
+                      }
+                    }
+                    if (ad.yRel == "adSlotTop") {
+                      if (ad.y < 0) {
+                        if ((inpageHeight - ad.y) > maximumHeight) {
+                          maximumHeight = inpageHeight - ad.y;
+                        }
+                      } else {
+                        if ((maximumHeight + ad.y) > inpageHeight) {
+                          maximumHeight = maximumHeight + ad.y;
+                        }
+                      }
+                    }
+                  }
+                }
+
+                if (this.getAdCount() > 1) {
+                  if (maximumHeight != 0 && maximumWidth != 0) {
+                    adContentEle.style.width = maximumWidth + "px";
+                    adContentEle.style.height = maximumHeight + "px";
+                  }
+
+                  this.adContainerDiv.style.marginLeft = marginLeft + "px";
+                  this.adContainerDiv.style.marginTop = marginTop + "px";
+                  }
+                }
+
+                if (typeof parent !== 'undefined' &&
+                    typeof parent.resizeAdContainer !== 'undefined') {
+                  parent.resizeAdContainer(this.advert.id, maximumWidth, maximumHeight);
+                }
+              }
+            }
+        </script>
+
+          <style>
+            html,
+            body {
+              padding: 0;
+              margin: 0;
+              text-align: center;
+              width: 100%;
+              height: 100%;
+            }
+
+            .preview {
+              box-sizing: border-box;
+            }
+
+            .oneBackground {
+              width: 100%;
+              height: 100%;
+              background-image: url('/images/OneBackground.png');
+              background-repeat: no-repeat;
+              background-position: center;
+              display: table;
+            }
+
+            .noMainFile {
+              display: table-cell;
+              vertical-align: middle;
+              font-size: 14px;
+              font-family: 'Open Sans';
+              font-weight: 600;
+              text-transform: uppercase;
+            }
+          </style>
+        </head>
+
+        <body>
+          <!-- QR Code -->
+      <style type="text/css">
+        .qr_container {
+          position: fixed;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(102, 102, 102, 0.9);
+          z-index: 2147483647;
+          display: none;
+        }
+
+        .qr_url_container {
+          padding: 10px;
+          word-break: break-all;
+          text-align: center;
+        }
+
+        .qr_code {
+          width: 150px;
+          height: 150px;
+          margin: 0 auto;
+        }
+
+        a.qr_preview_url {
+          color: #000000;
+          cursor: pointer;
+          font-size: 11px;
+          text-decoration: none;
+          font-family: 'Open Sans';
+          font-weight: 600;
+        }
+
+        a.qr_preview_url {
+          color:#000000;
+          text-decoration: none;
+        }
+
+        a.qr_preview_url {
+          color:#000000;
+          text-decoration: none;
+        }
+
+        .center_vertically {
+          position: relative;
+          top: 50%;
+          transform: translateY(-50%);
+        }
+      </style>
+
+      <script type="text/javascript">
+        function toggleQRCode(visible) {
+          if (visible) {
+            jQuery(".qr_container").each(function() {
+              jQuery(this).show();
+            });
+            jQuery("div[id^=adtechAdContent_float_]").each(function() {
+              jQuery(this).hide();
+            });
+          } else {
+            jQuery(".qr_container").each(function() {
+              jQuery(this).hide();
+            });
+            jQuery("div[id^=adtechAdContent_float_]").each(function() {
+              jQuery(this).show();
+            });
+          }
+        }
+      </script>
+
+      <!-- QR Code -->
+      <div class="qr_container">
+        <div class="center_vertically">
+            <div id="qr_code" class="qr_code" title=" http://aol.it/1QEIqIT">
+            <canvas width="150" height="150" style="display: none;"></canvas><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJYAAACWCAYAAAA8AXHiAAAKVUlEQVR4Xu3d0XLrOAwD0Pb/P/ruJDu7UytKdIKRk/YWfS0lUSAIUrLrfn58fPz5eNPPnz+3S39+fh68EZvLgJnduK1kbl0/gTDxebbOmT4m+7qMuUSxxPqCXkK+FPwSK0VuMU4yTWyqWGvlPymEd6etYg3QVLH2UPCGWCLP6dK7giY+jmvNVG1mM+7tzLVEjc+0SeO46l2nPZYAmTpUYh2RO5M0gnUaxxJrQGAMZBVrD7VmOLYUBgcMyVghcRVrD7E/RJ7frSLtsZ4PdqxYEmwJyJnE2uWjwLprH7KW2OxSvl1rcfO+K2i7AiJApiDJuF37kLXERvAQm11rlViTR0oCbol1RKmlcHFKFFJdszF8nqnzP2snaiQ2sq7OQ6fCV5ZC2VxqkxBCgVz5lN4PykXvbO1kr6s9XH6veJRYA5qvDIgEssSCMiNBE7BTG1k/sRF/qljwjlQKpARN5k5tZP3ERvwpsUqsA0+0p1iRq8T65cRaEWR2KpyNkUc6spYQe5fNLn++5T2WbC61kTInc8spucQaXk0W9gv4Mk9aHmT99Aguc5dYR5R+xAWpBDa1qWKtCbHCVgSDS+FqMf29BDZRA11/tEvXkn0ka13G7FLxxMedONIFabrgClxl/zjPWeBLEz5r3sUfIXGJFTJNskgCIIEUF9O1ZB+rpLrn31l72zWv9K4thcPD5CqWpOOtTdy8Z8utHWgpvMVol7IkqprGmYiVTp6ME2KJzaw3kYe3381G+zchjZT5JGY65q/9g9XvRhrxp8RS2i7sRI3EporVP7E/UE1IIzYl1jck1p9d3eImFXtl//DurUsfJIn17n1MryBKrE0ZEUxTYgWgpUOqWEfkqlgpk4ZxJVaJtYlKx2lKrF9ELOkFRpalEi7EmjaL4eOZcS7Zq7zEJzazfUgjLj5K1p+51qc078lGSqzjFYBieGawJfmTRItPhQrK1wVKrBJr+dXkEutx3yOPaxTDv0ax5HPcab+wQ3pF+bRXkeCeFViZV58VJuVK1k/xid9uKLEen1x3NcolFpzAVEVW2VfFWnYqN1+/2YW9zlPFgoTYVTKSNqCKBQFStlexnr8gXmG2C3udJ1YsyT652JTmUNY684JU+qXERk6OM8VK1tIxZ/bO0Ruk0veIjQAgpUkDonOJX8/alFiAmJBGbGAp/gNOUcMS64h4FQsYWGIBSINJiQWYlVgA0iuJNT6E3hUg7SlWJ5wzy5fsVU9Gz4fVRrwSx5143LzdIJNLsF8JiIXo1kr2WmKt0Z3201WsNXDpFcjzMxv5k8ROxqj/JdaAVBXrCMhOPLZ9xii5IJUs0qyR9Vf93OX34lMSgF3XL4qHnPiSvcqY673i+NqMDlwFSYBM15qBW2I9f0cl+Ce4lliTZ54J2KIikmgyj9pUsRSphV2SWbtOrrKFEuuF/2pN1EGCdpVe+I9cq/LdHmt9KtWY0UNokdXkSC5NsG5ECXiGnSif2EjvOLMRNRQbnVsStMTawDQhjdiUWPCinyhNFeu8146lNdiF/2yeKlYV6yECqUDQs8J08iRm0s9JvyA2O3uKVY+ppTBRmnSvK5+T+P03psQa0NuVRK9MkBILUuCVAaliHRGQpIIQXk2qWFWs/xEoseCfdablQcBNTlPtscLnZ3JpJkFL55GmV2X8q50QIiHatVyceG0jWJ+5/rZSmBJiFWwJ7CxIAuxq7XvBlz5QTlxnBlb2f+b6JdaCXULsNEDpuF1JfOb6JVaJ9b4LUikZifR/twZb+x7BQ0qRzCM2qaqKj6mqkWLJ5kqs8+6EVviXWPDOVJoh0nck5F8F9d7vRQ3SuWWvcsAQH9N4VLGGKAmQQggJmswjNlWsKpbw5GmbH0sskVVBI8liAS1tuhN/ZJ8zf/Sg8k6sZ3sTBZ/uTf4S+p2bLbEur8w9/7MraUoseDwizfvzIZyPkEdMkjQS2JkHJdYikgJ+S+EtiD+CWEkWa0+xUpGUWLJ+Cn6iIuLPBQvxSdQwiZn0WOLfNdGlx0qcVCBLrCMCErgSK7gjkoOCkDa1kSSqYq1RqmKtMbqxKLHWoJVYa4xKrC8ISKm+9ljyGSOp6WIzRkgac7FRbiQ+6tyJnSiflHS5bhAcxR9Zq8QKP4CSkEhOXBw0uLNLetUSKyREFevxCbTEKrGWovntFEvkOGX26s5qidYTBmlPoc3pV1dkrTNLofgsMZN5NASnfRREHNi5kXceDEqs22iXWAMmCdlLrBLrgEBKiEQdWwonCEgjKKWvPdYRgbTvSU636VpJXKf3WNK8p4vJuBSAZFyqWBLYxJ9rQOD17UQxZa9iIzEsscLvVEjwS6yPj+WHMJOGVpkt2SclNAlkmqEl1jq60alwPW1ukRBkVkKkpJdYR01J8ZgeTMaH0BKQnDbrkSXW8Y8npFoIIXbZrCP4r8VpbzeoA6syJ0RLk2EX2DKP4pHuN8FRTvuJTYkFzbuQRmxKrBM/wyjgSoYk80z7gBLrAIskiNhUsUqs9xJLrgREadJGdNU/iILNTo7ydmZqk2CWqqruX3xK5ppiJK8mi0Ml1uOQaAlJsE7IMEu0dJ4SCx6XJJefqRKfOU5IctYJlHusJIt2ZmhL4REBIWSJNSAgWZQCu0uNZJ4kGX9dj7ULSFGelFjio9gkhBCfRUHebZMm7DQhpHnfFZAS693Uebx+ibXpEleAlF6xinVL2G3PCqWEVLF+kWKNnzF699Yl+0VptBFe7VcuSGdziI+ihrIPWeuV81yvG0qs5/uOXeQvsVZpvfH3u4ImGSpuV7HWKM1iVsVa4FZilVhLBEQNzzxgyAFH+qXk+kcUXNaWea49lryavIxYaCAbUTLIXOKmBE19kvWEyCtCiqqKTeLvZQw9hE4nT8YJGTSIMpf4WGIJSkebEgswK7EApMGkxALMSiwAKSHWrpIiTZ6spaVQ4EjWk94kmVf8vdu/wHtlMv9ObG/6QHkILU6KjajBqlGVde7ZJAQosTLE6VlhNvXtqBLreSR3EVsqyPPe3R9RYg3YCPnFZpfyllhA91cGZOZOS+ERlbf3WIkDaaYl5LvAlfiYkk/UaNy/+peQH3I6Nkn3QaVQQfnqfYm1/pJLSuwkHimzSiz4bw0CrihGFWuNZBVrwKjEOgLy1yqWlgspDwlICdHO7vmSvcp1g7QvHA+5IJWNjAuKk2LDG4FSWGI9PhVujUeJ9bhfqGIdvzDIiV5ilVj/IVDFgr8rlMySEl/F+kWKtT7szi0SkqR/SZP6KGRP5pa9y9oyz/Xw8hNLYQLsZYyC8nX+Euvx9cO9WJRYC5aWWCXWUsiqWI8henkpXEYMDZIHzDsVI1lfLhZl+wmp7120yly7SJJiRqVQgBObxMkS6/ZUVmINbCuxJP0e347rIaSK9cLmOSF2S+Hz/9uHrxuez7P5iCSwLYV/SSncRSKZJ+0V0nGjT/IIQ9aSvaqNlDCZK3ngLvPObKY4/sRvN0iwJUAlVkql9d3Wj/woSIm1JkQV66TmvYqVvXO/puytRUvhgElLYUIjI9Y/XF6V2na1oaIAAAAASUVORK5CYII=" style="display: block;"></div> <!-- qr_code -->
+            <div class="qr_url_container">
+              <a id="qr_preview_url" class="qr_preview_url" href=" http://aol.it/1QEIqIT" target="_blank">http://aol.it/1QEIqIT</a>
+            </div> <!-- qr_url_container -->
+            <script>
+              jQuery(document).ready(function() {
+                var url = jQuery('#qr_preview_url').attr('href');
+                var qrcode = new QRCode(document.getElementById('qr_code'), {
+                  text: url,
+                  width: 150,
+                  height: 150,
+                  colorDark : '#000000',
+                  colorLight : '#FFFFFF',
+                  correctLevel : QRCode.CorrectLevel.H
+                });
+              });
+            </script>
+        </div> <!-- center_vertically -->
+      </div> <!-- qr_container -->
+            <script>
+               if (typeof parent !== 'undefined' &&
+                    typeof parent.resizeAdContainer !== 'undefined') {
+                  parent.resizeAdContainer(214101, 768, 1024);
+                }
+            </script>
+
+            <script type="text/javascript">
+              var previewComplete = false;
+              function previewCompleteTimer() {
+                if (previewComplete === false) {
+                  if (typeof parent !== 'undefined' &&
+                      typeof parent.refreshPreviewComplete !== 'undefined') {
+                    parent.refreshPreviewComplete(false, 214101);
+                  }
+                  if (typeof parent !== 'undefined' &&
+                      typeof parent.parent !== 'undefined' &&
+                      typeof parent.parent.previewComplete !== 'undefined') {
+                    parent.parent.previewComplete(false, '');
+                  }
+                }
+              }
+              setTimeout(previewCompleteTimer, 20000); // 20 seconds
+            </script>
+
+            <!-- Preview -->
+              <div id="preview-214101">
+                <div id="adContent-214101" class="ad-content ad-preview">
+                  <div id="adPos-214101" class="adPos" style="overflow: visible; left: 224px;">
+                      <script type="text/javascript">
+                        adtechCanvasAdPreview = true;
+                        com.adtech.debugLogger_2_53_3 = com.adtech.debugLogger;
+                        adtechEvents[214101] = {"indeterminableViewability":"Indeterminable Viewability","viewableImpression":"Viewable Impression","orientationChange":"orientationChange","viewTimer":"View","backupViewableImpression":"Backup Viewable Impression","backupView":"Backup Impression","interactionTimer":"Interaction","interactiveImpression":"Interactive Impression","displayTimer":"Display","engagementTimer":"Engagement","engagement":"Engagement"};
+                        adtechClickthroughs[214101] = {"Image Clicked":"Image Clicked","default":"Default Clickthrough","backupImageClickthrough":"Backup Image Clickthrough"};
+                        try {
+                          parent.parent.addEventLogPanel('214101', '[CS-118691] Simple Full Page Flex - Mobile ');
+                        } catch (e) {
+                        }
+
+          var rmLibVersion = '2.53.3'.split('.');
+          var rmlib_major_version = rmLibVersion[0];
+          var rmlib_minor_version = rmLibVersion[1];
+          var revision = rmLibVersion[2];
+          if (rmlib_major_version <= 2 && rmlib_minor_version < 5) {
+            var adtechAdCallback = adtechAdCallback || {};
+            adtechAdCallback[1456660442057] = new com.adtech.AdPreviewCallbackHandler();
+          } else {
+            var adtechAdCallbacks = adtechAdCallbacks || {};
+            adtechAdCallbacks[1456660442057] = adtechAdCallbacks[1456660442057] || [];
+            adtechAdCallbacks[1456660442057].push(new com.adtech.AdPreviewCallbackHandler());
+          }
+                        var adtechAdConfig = {
+        "canvasId": 214101,
+        "liveStatsEnabled": false,
+        "servicesUrl": "http://canvas-services.adtech.de/",
+        "dynamic": false,
+        "productFamilyId": 0,
+        "formatId": 3,
+        "servicesHosts": {
+          "http": "http://ads.pictela.net/",
+          "https": "https://secure-ads.pictela.net/",
+          "post": "https://origin-ads.pictela.net/"
+        },
+        "adServerVars": {
+          "uid": "1456660442057",
+          "id": "214101",
+          "bannerId": "_ADBNID_",
+          "bannerUid": "_ADBNUID_",
+          "networkId": "_ADNETID_",
+          "subNetworkId": "_ADSUBNETID_",
+          "creativeId": "0",
+          "pageId": "_ADFC_PAGEID_",
+          "placementId": "_ADCUID_",
+          "adSize": "_ADFC_ADSIZE_",
+          "servingProto": "http",
+          "servingHost": "_ADVIRHOST_",
+          "sequenceId32": "_ADREFSEQUENCEID32_",
+          "sequenceId64": "_ADREFSEQUENCEID64_",
+          "secureAssetHost": "https://secure-ads.pictela.net/",
+          "configBaseURL": "_ADPATH_",
+          "assetBaseURL": "http://ads.pictela.net/rm/ads/214101/75/",
+          "baseURL": "_ADPATH_",
+          "viewCounter": "_ADCOUNT_",
+          "campaignId": "_ADMCID_",
+          "publisherId": "_ADWEBSITEID_"
+        },
+        "geoData": {
+          "area": "_ADAREATEXT_",
+          "city": "_ADCITYTEXT_",
+          "country": "_ADCOUNTRYTEXT_",
+          "state": "_ADSTATETEXT_",
+          "zip": "_ADZIPTEXT_"
+        },
+        "tagVars": {},
+        "preview": true,
+        "pubVars": {
+          "clickPixel": "",
+          "iframeBusterPath": "",
+          "clickRedirect": "",
+          "overflowFixLevel": "0",
+          "viewCountUrl": "",
+          "overrideX": "",
+          "overrideY": "",
+          "closeTimeout": "0"
+        },
+        "clickRedirect": "",
+        "assetContainers": {
+          "main": {
+            "type": "inlineDiv",
+            "width": 768,
+            "height": 1024,
+            "contentWidth": 768,
+            "contentHeight": 1024,
+            "contentWidthUnit": "px",
+            "contentHeightUnit": "px",
+            "xRel": "adSlotLeft",
+            "yRel": "adSlotTop",
+            "x": 0,
+            "y": 0,
+            "renderEvent": "serve",
+            "content": "inline.html",
+            "contentType": "html",
+            "zIndex": 1,
+            "wmode": "opaque",
+            "pluginVersion": 0.0,
+            "contractedY": 0,
+            "contractedX": 0,
+            "contractedWidth": 768,
+            "contractedHeight": 1024,
+            "isExpandable": false,
+            "startContracted": true,
+            "stickyX": false,
+            "stickyY": false,
+            "pushesContent": false,
+            "expandAnimationDuration": 0,
+            "contractAnimationDuration": 0,
+            "closeTimeout": 0,
+            "modal": false,
+            "sequence": 1,
+            "iframeBuster": "",
+            "langVersion": 0
+          }
+        },
+        "clickthroughs": {
+          "default": {
+            "id": 1008,
+            "plid": 11552760,
+            "dest": "",
+            "target": "_blank",
+            "features": ""
+          },
+          "backupImageClickthrough": {
+            "id": 7393,
+            "plid": 11552763,
+            "dest": "",
+            "target": "_blank",
+            "features": ""
+          },
+          "Image Clicked": {
+            "id": 63852,
+            "plid": 11552766,
+            "dest": "",
+            "target": "_blank",
+            "features": ""
+          }
+        },
+        "contentVariables": {
+          "Backup Alt Text": "- advertisement",
+          "QRUrl": "http://aol.it/1TyWuZm"
+        },
+        "contentProperties": {
+          "Clickthrough": "https://itunes.apple.com/fr/app/lagefi-pour-ipad/id468627956?mt=8",
+          "Image Settings": {
+            "Portrait Image": "768x1004_iPad.gif",
+            "Landscape Image": "1024x748_iPad.gif"
+          }
+        },
+        "dataFeeds": {},
+        "screenGrabs": {},
+        "polls": {},
+        "assets": [
+          {
+            "id": "Backup image",
+            "name": "logo-techstack-pictela.gif",
+            "url": "logo-techstack-pictela.gif"
+          },
+          {
+            "id": "main",
+            "name": "inline.html",
+            "url": "inline.html"
+          },
+          {
+            "id": null,
+            "name": "script.js",
+            "url": "script.js"
+          },
+          {
+            "id": null,
+            "name": "customAd.js",
+            "url": "customAd.js"
+          },
+          {
+            "id": null,
+            "name": "customUi.json",
+            "url": "customUi.json"
+          },
+          {
+            "id": null,
+            "name": "768x1004_iPad.gif",
+            "url": "768x1004_iPad.gif"
+          },
+          {
+            "id": null,
+            "name": "1024x748_iPad.gif",
+            "url": "1024x748_iPad.gif"
+          },
+          {
+            "id": null,
+            "name": "contractButton_100x100.png",
+            "url": "contractButton_100x100.png"
+          }
+        ],
+        "events": [
+          {
+            "id": 0,
+            "plid": 31214253,
+            "name": "engagement",
+            "cumulative": false,
+            "interaction": true,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214256,
+            "name": "interactiveImpression",
+            "cumulative": false,
+            "interaction": false,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214259,
+            "name": "viewableImpression",
+            "cumulative": false,
+            "interaction": false,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214262,
+            "name": "indeterminableViewability",
+            "cumulative": false,
+            "interaction": false,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214265,
+            "name": "backupView",
+            "cumulative": false,
+            "interaction": false,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214268,
+            "name": "backupViewableImpression",
+            "cumulative": false,
+            "interaction": false,
+            "custom": false,
+            "video": false,
+            "isLoggable": true
+          },
+          {
+            "id": 0,
+            "plid": 31214283,
+            "name": "orientationChange",
+            "cumulative": true,
+            "interaction": false,
+            "custom": true,
+            "video": false,
+            "isLoggable": false
+          }
+        ],
+        "timers": [
+          {
+            "id": 0,
+            "plid": 31214271,
+            "name": "displayTimer"
+          },
+          {
+            "id": 0,
+            "plid": 31214274,
+            "name": "viewTimer"
+          },
+          {
+            "id": 0,
+            "plid": 31214277,
+            "name": "engagementTimer"
+          },
+          {
+            "id": 0,
+            "plid": 31214280,
+            "name": "interactionTimer"
+          }
+        ],
+        "eventHandlers": [],
+        "thirdPartyTracking": [],
+        "contentHubConfig": {
+          "mapping": {},
+          "assets": {}
+        },
+        "fallback": "logo-techstack-pictela.gif"
+      };adtechAdConfig.preview=true;adtechAdConfig.overrides = adtechAdConfig.overrides || {};adtechAdConfig.overrides["displayWindowTarget"] = self;(function(A){var I=false;if(!A.overrides||A.overrides.displayWindowTarget!=self){for(var D in A.assetContainers){if(A.assetContainers.hasOwnProperty(D)){var C=A.assetContainers[D];if(C.type!="inlineDiv"||C.isExpandable){I=true;break}}}}if(A.overrides&&A.overrides.displayWindowTarget){var K=A.overrides.displayWindowTarget;K=(typeof adtechIframeHashArray!="undefined"&&self!=top)?K.parent:K}else{var G=null;var E=parent;while(E!=undefined){try{var L=E.document;if(L){G=E}}catch(H){}E=(E==top)?null:E.parent}var K=G||top}var B=false;try{var L=K.document;if(L){B=true}}catch(H){}var F=(I&&(self!=top&&B))?K:self;F.com=F.com||{};F.com.adtech=F.com.adtech||{};F.com.adtech.AdtechCustomAd214101=function(){};F.com.adtech.AdtechCustomAd214101.prototype={init:function(M){if(!M.richView){return }this.advert=M;this.utils=F.com.adtech.Utils_2_53_3;this.globalEventBus=F.adtechAdManager_2_53_3.globalEventBus;this.richMediaEvent=F.com.adtech.RichMediaEvent_2_53_3;var N="onorientationchange" in window;var O=N?"orientationchange":"resize";F.addEventListener("orientationchange",this.utils.createClosure(this,this.orientationChangeHandler));if(this.globalEventBus.pageLoaded){this.orientationChangeHandler()}else{this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD,this.utils.createClosure(this,this.orientationChangeHandler))}console.log(mraid.getScreenSize())},orientationChangeHandler:function(){var N={};var M={width:1024,height:768,offsetX:0,offsetY:0,useCustomClose:false,isModal:false};switch(F.orientation){case -90:case 90:N.orientation="Landscape";break;default:N.orientation="Portrait";M.width=768;M.height=1024;break}var P=new this.richMediaEvent("orientationChange");P.meta=N;this.advert.eventBus.dispatchEvent(P);var O=this.advert.getAssetContainer("main").getContent().contentObject;O.style.width=M.width+"px";O.style.height=M.height+"px";O.parentNode.style.width=M.width+"px";O.parentNode.style.height=M.height+"px";O.parentNode.parentNode.style.width=M.width+"px";O.parentNode.parentNode.style.height=M.height+"px";O.width=M.width+"px";O.height=M.height+"px"}};F.adtechCallbackInstances=F.adtechCallbackInstances||[];var J=F.adtechCallbackInstances.leng…</script><script type="text/javascript" src="http://ads.pictela.net/rm/lib/richmedia/adtechRichMediaLib_2_53_3.js"></script><div id="adtechAdContainer_214101_1456660442057" style="position:relative;width:768px;height:1024px;display:inline-block;z-index:1;"><div id="adtechAdContent_main_1456660442057" style="position: absolute; width: 768px; height: 1024px; left: 0px; top: 0px;"><iframe src="http://ads.pictela.net/rm/ads/214101/75/inline.html" width="768px" height="1024px" id="adtechAdContent_main_1456660442057_iframe" scrolling="no" frameborder="no" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true" style="padding: 0px; border: 0px none transparent; width: 768px; height: 1024px; visibility: visible;"></iframe></div></div>
+                  </div> <!-- adPos-214101 -->
+                </div> <!-- adContent-214101 -->
+              </div> <!-- preview-214101 -->
+            <script type="text/javascript">
+              previewComplete = true;
+              if (typeof parent !== 'undefined' &&
+                  typeof parent.refreshPreviewComplete !== 'undefined') {
+                parent.refreshPreviewComplete(true, 214101);
+              }
+            </script>
+
+      </body></html>
+    </iframe>
+
+    <div id="test">
+      <script type='text/javascript'>
+        adtechCanvasAdPreview = true;
+        var com = com || {};
+        com.adtech = com.adtech || {};
+        com.adtech.debugLogger_2_53_3 = com.adtech.debugLogger;
+
+        var adtechAdConfig =  {
+  "canvasId": 214322,
+  "liveStatsEnabled": false,
+  "servicesUrl": "http://canvas-services.adtech.de/",
+  "dynamic": false,
+  "templateId": 212253,
+  "productFamilyId": 0,
+  "formatId": 4,
+  "servicesHosts": {
+    "http": "http://ads.pictela.net/",
+    "https": "https://secure-ads.pictela.net/",
+    "post": "https://origin-ads.pictela.net/"
+  },
+  "adServerVars": {
+    "uid": "1456346254660",
+    "id": "214322",
+    "bannerId": "_ADBNID_",
+    "bannerUid": "_ADBNUID_",
+    "networkId": "_ADNETID_",
+    "subNetworkId": "_ADSUBNETID_",
+    "creativeId": "0",
+    "pageId": "_ADFC_PAGEID_",
+    "placementId": "_ADCUID_",
+    "adSize": "_ADFC_ADSIZE_",
+    "servingProto": "http",
+    "servingHost": "_ADVIRHOST_",
+    "sequenceId32": "_ADREFSEQUENCEID32_",
+    "sequenceId64": "_ADREFSEQUENCEID64_",
+    "secureAssetHost": "https://secure-ads.pictela.net/",
+    "configBaseURL": "_ADPATH_",
+    "assetBaseURL": "./",
+    "baseURL": "_ADPATH_",
+    "viewCounter": "_ADCOUNT_",
+    "campaignId": "_ADMCID_",
+    "publisherId": "_ADWEBSITEID_"
+  },
+  "geoData": {
+    "area": "_ADAREATEXT_",
+    "city": "_ADCITYTEXT_",
+    "country": "_ADCOUNTRYTEXT_",
+    "state": "_ADSTATETEXT_",
+    "zip": "_ADZIPTEXT_"
+  },
+  "tagVars": {},
+  "preview": true,
+  "pubVars": {
+    "clickPixel": "",
+    "iframeBusterPath": "",
+    "clickRedirect": "",
+    "overflowFixLevel": "0",
+    "viewCountUrl": "",
+    "overrideX": "",
+    "overrideY": "",
+    "closeTimeout": "0"
+  },
+  "clickRedirect": "",
+  "assetContainers": {
+    "main": {
+      "type": "floatingDiv",
+      "width": 320,
+      "height": 480,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "contentWidthUnit": "%",
+      "contentHeightUnit": "%",
+      "xRel": "pageLeft",
+      "yRel": "pageTop",
+      "x": 0,
+      "y": 0,
+      "renderEvent": "serve",
+      "content": "mobileResponsive.html",
+      "contentType": "html",
+      "zIndex": 99999,
+      "wmode": "transparent",
+      "pluginVersion": 0.0,
+      "contractedY": 0,
+      "contractedX": 0,
+      "contractedWidth": 320,
+      "contractedHeight": 480,
+      "isExpandable": true,
+      "startContracted": false,
+      "stickyX": true,
+      "stickyY": true,
+      "pushesContent": false,
+      "expandAnimationDuration": 0,
+      "contractAnimationDuration": 0,
+      "closeTimeout": 15,
+      "modal": false,
+      "sequence": 1,
+      "iframeBuster": "",
+      "langVersion": 0
+    }
+  },
+  "clickthroughs": {
+    "default": {
+      "id": 1575,
+      "plid": 11565212,
+      "dest": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;n",
+      "target": "_blank",
+      "features": ""
+    },
+    "backupImageClickthrough": {
+      "id": 8069,
+      "plid": 11565215,
+      "dest": "",
+      "target": "_blank",
+      "features": ""
+    },
+    "Clickthrough": {
+      "id": 19375,
+      "plid": 11565218,
+      "dest": "",
+      "target": "_blank",
+      "features": ""
+    }
+  },
+  "contentVariables": {
+    "QRUrl": "http://aol.it/1Qc4X0e"
+  },
+  "contentProperties":  {"Collapsed Image":"","Enable Video Player":true,"Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;n","Expanded Settings":{"Start Expanded":true,"Close Button Image":"closeButton_100x100.png","Image":"320x480.jpg","Width":320,"Height":480},"Video Player":{"Volume":"0.2","MP4 File":"Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Height":180,"Width":320,"X":0,"Y":190,"WEBM File":""}} ,
+  "dataFeeds": {},
+  "screenGrabs": {},
+  "polls": {},
+  "assets": [{
+    "id": null,
+    "name": "expandableVideo.js",
+    "url": "expandableVideo.js"
+  }, {
+    "id": null,
+    "name": "customAd.js",
+    "url": "customAd.js"
+  }, {
+    "id": "main",
+    "name": "expandableVideo.html",
+    "url": "expandableVideo.html"
+  }, {
+    "id": null,
+    "name": "Pictela_Premium_Summer.webmsd.webm",
+    "url": "Pictela_Premium_Summer.webmsd.webm"
+  }, {
+    "id": null,
+    "name": "Pictela_Premium_Summer.mp4",
+    "url": "Pictela_Premium_Summer.mp4"
+  }, {
+    "id": null,
+    "name": "300x180_play_video.png",
+    "url": "300x180_play_video.png"
+  }, {
+    "id": null,
+    "name": "closeButton_100x100.png",
+    "url": "closeButton_100x100.png"
+  }, {
+    "id": null,
+    "name": "customUi.json",
+    "url": "customUi.json"
+  }, {
+    "id": null,
+    "name": "Performagroup/Expandable Pushdown/320x150.jpg",
+    "url": "Performagroup/Expandable Pushdown/320x150.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/Expandable Pushdown/320x50.jpg",
+    "url": "Performagroup/Expandable Pushdown/320x50.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/320x480.jpg",
+    "url": "Performagroup/video interstitial/320x480.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/320x568.jpg",
+    "url": "Performagroup/video interstitial/320x568.jpg"
+  }, {
+    "id": null,
+    "name": "Performagroup/video interstitial/Kadjar_10_OPO_070116.mp4",
+    "url": "Performagroup/video interstitial/Kadjar_10_OPO_070116.mp4"
+  }, {
+    "id": null,
+    "name": "320x480.jpg",
+    "url": "320x480.jpg"
+  }, {
+    "id": null,
+    "name": "Kadjar_10_OPO_070116.mp4",
+    "url": "Kadjar_10_OPO_070116.mp4"
+  }],
+  "events": [{
+    "id": 0,
+    "plid": 31245059,
+    "name": "engagement",
+    "cumulative": false,
+    "interaction": true,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245062,
+    "name": "interactiveImpression",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245065,
+    "name": "viewableImpression",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245068,
+    "name": "indeterminableViewability",
+    "cumulative": false,
+    "interaction": false,
+    "custom": false,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245071,
+    "name": "close",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245074,
+    "name": "expand",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245077,
+    "name": "contract",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245092,
+    "name": "Video Video Play",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245095,
+    "name": "Video Video Start",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245098,
+    "name": "Video Video First Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245101,
+    "name": "Video Video Midpoint",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245104,
+    "name": "Video Video Third Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245107,
+    "name": "Video Video Complete",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245110,
+    "name": "Video Video Mute",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245113,
+    "name": "Video Video Unmute",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245116,
+    "name": "Video Video Pause",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245119,
+    "name": "Video Video Replay",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245122,
+    "name": "Video Video Resume",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245125,
+    "name": "Video Video Seek",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245128,
+    "name": "Video Video Fullscreen",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245134,
+    "name": "stateChange",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": false,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245137,
+    "name": "Video Play",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245140,
+    "name": "Video Start",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245143,
+    "name": "Video First Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245146,
+    "name": "Video Midpoint",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245149,
+    "name": "Video Third Quartile",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245152,
+    "name": "Video Complete",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245155,
+    "name": "Video Mute",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245158,
+    "name": "Video Unmute",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245161,
+    "name": "Video Pause",
+    "cumulative": true,
+    "interaction": false,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245164,
+    "name": "Video Replay",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245167,
+    "name": "Video Resume",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245170,
+    "name": "Video Seek",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }, {
+    "id": 0,
+    "plid": 31245173,
+    "name": "Video Fullscreen",
+    "cumulative": true,
+    "interaction": true,
+    "custom": true,
+    "video": true,
+    "isLoggable": true
+  }],
+  "timers": [{
+    "id": 0,
+    "plid": 31245080,
+    "name": "displayTimer"
+  }, {
+    "id": 0,
+    "plid": 31245083,
+    "name": "viewTimer"
+  }, {
+    "id": 0,
+    "plid": 31245086,
+    "name": "engagementTimer"
+  }, {
+    "id": 0,
+    "plid": 31245089,
+    "name": "interactionTimer"
+  }, {
+    "id": 0,
+    "plid": 31245131,
+    "name": "Video Video View"
+  }, {
+    "id": 0,
+    "plid": 31245176,
+    "name": "Video View"
+  }],
+  "eventHandlers": [{
+    "name": "expand",
+    "target": "main",
+    "source": "main",
+    "action": "expand"
+  }, {
+    "name": "contract",
+    "target": "main",
+    "source": "main",
+    "action": "contract"
+  }, {
+    "name": "close",
+    "target": "main",
+    "source": "main",
+    "action": "close"
+  }],
+  "thirdPartyTracking": [{
+    "id": 82181,
+    "type": "1_PIXEL",
+    "url": "https://ad.doubleclick.net/ddm/ad/N5648.286065.PERFORMGROUP/B9330869.127005073;sz=1x1;ord=1456346254660;dc_lat=;dc_rdid=;tag_for_child_directed_treatment=?\" BORDER=0 WIDTH=1 HEIGHT=1 ALT=",
+    "secureUrl": "",
+    "onEvent": "VIEW",
+    "eventName": ""
+  }],
+  "contentHubConfig": {
+    "mapping": {},
+    "assets": {}
+  }
+}
+;
+        adtechAdConfig.preview = true;
+        adtechAdConfig.overrides = adtechAdConfig.overrides || {};
+        adtechAdConfig.overrides["displayWindowTarget"] = self;
+        (function () {
+  var expandedSettings = adtechAdConfig.contentProperties['Expanded Settings'];
+	console.log(adtechAdConfig);
+  var mainContainer = adtechAdConfig.assetContainers.main;
+  mainContainer.contentWidth = expandedSettings['Width'];
+	mainContainer.x = (window.innerWidth - 320) / 2;
+	mainContainer.y = (window.innerHeight - 480) / 2;
+  mainContainer.contentHeight = expandedSettings['Height'];
+})();
+
+
+/**
+ * Boilerplate code required to hook into the ADTECH rich media library.
+ *
+ * For API documentation, please contact canvas-help@adtech.com
+ */
+(function(adConfig) {
+  var requiresBreakout = false;
+  for (var id in adConfig.assetContainers) {
+    if (adConfig.assetContainers.hasOwnProperty(id)) {
+      var container = adConfig.assetContainers[id];
+      if (container.type != 'inlineDiv' || container.isExpandable) {
+        requiresBreakout = true;
+        break;
+      }
+    }
+  }
+
+  var displayWindowTarget = (adConfig.overrides && adConfig.overrides.displayWindowTarget) ?
+      adConfig.overrides.displayWindowTarget : top;
+  var targetWindow = (requiresBreakout && (self != top) &&
+      ((typeof inDapIF != 'undefined' && inDapIF) || (typeof inFIF != 'undefined' && inFIF) ||
+      (typeof adtechIframeHashArray != 'undefined')) &&
+      ((typeof adtechCanvasAdPreview == 'undefined' || !adtechCanvasAdPreview))) ?
+          displayWindowTarget : self;
+
+  targetWindow.com = targetWindow.com || {};
+  targetWindow.com.adtech = targetWindow.com.adtech || {};
+
+  targetWindow.com.adtech.AdtechCustomAd$AD_ID$ = function() {
+    // Custom code class constructor.
+  };
+
+  targetWindow.com.adtech.AdtechCustomAd$AD_ID$.prototype = {
+
+     init: function(advert) {
+       if (!advert.richView) {
+         // The backup client can not render the rich version of the advert.
+         return;
+       }
+			
+       var advertInstance = advert;
+       // A few useful things to help you get started. Please delete as necessary!
+       this.utils = targetWindow.com.adtech.Utils_$VERSION$;
+       this.globalEventBus = targetWindow.adtechAdManager_$VERSION$.globalEventBus;
+       this.richMediaEvent = targetWindow.com.adtech.RichMediaEvent_$VERSION$;
+			 
+			 this.mainContainer = advertInstance.getAssetContainer('main');
+       this.mainContent = advertInstance.getContent();
+			 this.advert = advertInstance;
+			 
+       if (typeof mraid != 'undefined') {
+         mraid.addEventListener('stateChange', function(){
+           advertInstance.eventBus.dispatchEvent('stateChange');
+         });
+       }
+			 
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this,this.adResize));
+			 this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this,this.adResize));
+      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this,this.adResize));
+			if (this.globalEventBus.pageLoaded) {
+        this.pageLoadHandler();
+      } else {
+        this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD,
+          this.utils.createClosure(this, this.pageLoadHandler));
+      }
+			 
+     },
+
+    createEventRecord: function(){
+      ADTECH.event('stateChange');
+    },
+		
+		adResize: function() {
+
+      var browserWidth = this.utils.getViewportDims().w;
+			var browserHeight = this.utils.getViewportDims().h;
+      var adContentWidth = 320;
+			var adContentHeight = 480;
+
+			var leftValue = (browserWidth-adContentWidth) / 2;
+			var topValue = (browserHeight-adContentHeight) / 2;
+			
+			this.mainContainer.x = 0;
+			this.mainContainer.y = 0;
+		
+
+      this.mainContainer.div.style.top = (this.mainContainer.floatOffsetTop + topValue) + 'px';
+			this.mainContainer.div.style.left = leftValue + 'px';
+			
+      
+      
+    },
+		pageLoadHandler: function() {
+			/*
+			(function () {
+				var expandedSettings = adConfig.contentProperties['Expanded Settings'];
+				var mainContainer = adConfig.assetContainers.main;
+				console.log(mainContainer);
+				mainContainer.contentWidth = expandedSettings['Width'];
+				mainContainer.x = (targetWindow.innerWidth - 320) / 2;
+				mainContainer.y = (targetWindow.innerHeight - 480) / 2;
+				
+				mainContainer.contentHeight = expandedSettings['Height'];
+			})();
+			*/
+			this.adResize();
+		}
+
+   };
+
+   targetWindow.adtechCallbackInstances = targetWindow.adtechCallbackInstances || [];
+   var instanceIndex = targetWindow.adtechCallbackInstances.length;
+   targetWindow.adtechCallbackInstances[instanceIndex] =
+       new targetWindow.com.adtech.AdtechCustomAd$AD_ID$();
+
+   targetWindow.adtechAdCallback = targetWindow.adtechAdCallback || {};
+   targetWindow.adtechAdCallback[adConfig.adServerVars.uid] =
+       targetWindow.adtechCallbackInstances[instanceIndex];
+})(adtechAdConfig);
+;
+        (function(D) {
+          if (!D.initOverride) {
+            var B = "./../local/";
+            if (D.adServerVars.servingProto === "https") {
+              var E = ["baseURL", "assetBaseURL"];
+              for (var C = 0; C < E.length; C++) {
+                var G = D.adServerVars[E[C]];
+                if (G) {
+                  D.adServerVars[E[C]] = G.replace(/^http:\/\/[-a-z0-9\.]*\//i, "https://secure-ads.pictela.net/")
+                }
+              }
+              B = "https://secure-ads.pictela.net/rm/lib/richmedia/"
+            }
+            var H = (D.mraidCompatible) ? "MRAID" : "";
+            var F = B + "adtechRichMediaLib" + H + "_2_53_3.js";
+            D.rmLibUrl = F;
+            if (!window.adtechAdManager_2_53_3) {
+              adtechAdQueue = window.adtechAdQueue || [];
+              adtechAdQueue.push(D);
+              if (!window.adtechAdManagerReqs || !window.adtechAdManagerReqs["2_53_3"]) {
+                adtechAdManagerReqs = window.adtechAdManagerReqs || {};
+                adtechAdManagerReqs["2_53_3"] = true;
+                var A = "scr";
+                document.write("<" + A + 'ipt type="text/javascript" src="' + F + '"></' + A + "ipt>")
+              }
+            } else {
+              adtechAdManager_2_53_3.registerAd(D)
+            }
+          }
+        })(adtechAdConfig);
+      </script>
+    </div>
+  </body>
+</html>

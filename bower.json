@@ -1,0 +1,6 @@
+{
+  "name": "gulp-starter-kit",
+  "dependencies": {
+    "jquery": "#1"
+  }
+}
