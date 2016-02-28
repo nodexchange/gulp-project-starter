@@ -1,130 +1,122 @@
+adtechAdConfig.preview = true;
+adtechAdConfig.overrides = adtechAdConfig.overrides || {};
+adtechAdConfig.overrides["displayWindowTarget"] = self;
 (function () {
-  var expandedSettings = adtechAdConfig.contentProperties['Expanded Settings'];
-	console.log(adtechAdConfig);
-  var mainContainer = adtechAdConfig.assetContainers.main;
-  mainContainer.contentWidth = expandedSettings['Width'];
-	mainContainer.x = (window.innerWidth - 320) / 2;
-	mainContainer.y = (window.innerHeight - 480) / 2;
-  mainContainer.contentHeight = expandedSettings['Height'];
+  var B = adtechAdConfig.contentProperties["Expanded Settings"];
+  console.log(adtechAdConfig);
+  var A = adtechAdConfig.assetContainers.main;
+  A.contentWidth = B.Width;
+  A.x = (window.innerWidth - 320) / 2;
+  A.y = (window.innerHeight - 480) / 2;
+  A.contentHeight = B.Height
 })();
-
-
-/**
- * Boilerplate code required to hook into the ADTECH rich media library.
- *
- * For API documentation, please contact canvas-help@adtech.com
- */
-(function(adConfig) {
-  var requiresBreakout = false;
-  for (var id in adConfig.assetContainers) {
-    if (adConfig.assetContainers.hasOwnProperty(id)) {
-      var container = adConfig.assetContainers[id];
-      if (container.type != 'inlineDiv' || container.isExpandable) {
-        requiresBreakout = true;
-        break;
+(function (D) {
+  var F = false;
+  for (var G in D.assetContainers) {
+    if (D.assetContainers.hasOwnProperty(G)) {
+      var B = D.assetContainers[G];
+      if (B.type != "inlineDiv" || B.isExpandable) {
+        F = true;
+        break
       }
     }
   }
-
-  var displayWindowTarget = (adConfig.overrides && adConfig.overrides.displayWindowTarget) ?
-      adConfig.overrides.displayWindowTarget : top;
-  var targetWindow = (requiresBreakout && (self != top) &&
-      ((typeof inDapIF != 'undefined' && inDapIF) || (typeof inFIF != 'undefined' && inFIF) ||
-      (typeof adtechIframeHashArray != 'undefined')) &&
-      ((typeof adtechCanvasAdPreview == 'undefined' || !adtechCanvasAdPreview))) ?
-          displayWindowTarget : self;
-
-  targetWindow.com = targetWindow.com || {};
-  targetWindow.com.adtech = targetWindow.com.adtech || {};
-
-  targetWindow.com.adtech.AdtechCustomAd$AD_ID$ = function() {
-    // Custom code class constructor.
-  };
-
-  targetWindow.com.adtech.AdtechCustomAd$AD_ID$.prototype = {
-
-     init: function(advert) {
-       if (!advert.richView) {
-         // The backup client can not render the rich version of the advert.
-         return;
-       }
-			
-       var advertInstance = advert;
-       // A few useful things to help you get started. Please delete as necessary!
-       this.utils = targetWindow.com.adtech.Utils_$VERSION$;
-       this.globalEventBus = targetWindow.adtechAdManager_$VERSION$.globalEventBus;
-       this.richMediaEvent = targetWindow.com.adtech.RichMediaEvent_$VERSION$;
-			 
-			 this.mainContainer = advertInstance.getAssetContainer('main');
-       this.mainContent = advertInstance.getContent();
-			 this.advert = advertInstance;
-			 
-       if (typeof mraid != 'undefined') {
-         mraid.addEventListener('stateChange', function(){
-           advertInstance.eventBus.dispatchEvent('stateChange');
-         });
-       }
-			 
-      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this,this.adResize));
-			 this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this,this.adResize));
-      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this,this.adResize));
-			if (this.globalEventBus.pageLoaded) {
-        this.pageLoadHandler();
-      } else {
-        this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD,
-          this.utils.createClosure(this, this.pageLoadHandler));
+  var A = (D.overrides && D.overrides.displayWindowTarget)
+    ? D.overrides.displayWindowTarget
+    : top;
+  var E = (F && (self != top) && ((typeof inDapIF != "undefined" && inDapIF) || (typeof inFIF != "undefined" && inFIF) || (typeof adtechIframeHashArray != "undefined")) && ((typeof adtechCanvasAdPreview == "undefined" || !adtechCanvasAdPreview)))
+    ? A
+    : self;
+  E.com = E.com || {};
+  E.com.adtech = E.com.adtech || {};
+  E.com.adtech.AdtechCustomAd{{tokens.canvasID}} = function () {};
+  E.com.adtech.AdtechCustomAd{{tokens.canvasID}}.prototype = {
+    init: function (I) {
+      if (!I.richView) {
+        return
       }
-			 
-     },
-
-    createEventRecord: function(){
-      ADTECH.event('stateChange');
+      console.log('[MY] INIT CUSTOMAD');
+      var H = I;
+      this.utils = E.com.adtech.Utils_2_53_3;
+      this.globalEventBus = E.adtechAdManager_2_53_3.globalEventBus;
+      this.richMediaEvent = E.com.adtech.RichMediaEvent_2_53_3;
+      this.mainContainer = H.getAssetContainer("main");
+      this.mainContent = H.getContent();
+      this.advert = H;
+      if (typeof mraid != "undefined") {
+        mraid.addEventListener("stateChange", function () {
+          H.eventBus.dispatchEvent("stateChange")
+        })
+      }
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this, this.adResize));
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this, this.adResize));
+      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this, this.adResize));
+      if (this.globalEventBus.pageLoaded) {
+        this.pageLoadHandler()
+      } else {
+        this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD, this.utils.createClosure(this, this.pageLoadHandler))
+      }
     },
-		
-		adResize: function() {
-
-      var browserWidth = this.utils.getViewportDims().w;
-			var browserHeight = this.utils.getViewportDims().h;
-      var adContentWidth = 320;
-			var adContentHeight = 480;
-
-			var leftValue = (browserWidth-adContentWidth) / 2;
-			var topValue = (browserHeight-adContentHeight) / 2;
-			
-			this.mainContainer.x = 0;
-			this.mainContainer.y = 0;
-		
-
-      this.mainContainer.div.style.top = (this.mainContainer.floatOffsetTop + topValue) + 'px';
-			this.mainContainer.div.style.left = leftValue + 'px';
-			
-      
-      
+    createEventRecord: function () {
+      ADTECH.event("stateChange")
     },
-		pageLoadHandler: function() {
-			/*
-			(function () {
-				var expandedSettings = adConfig.contentProperties['Expanded Settings'];
-				var mainContainer = adConfig.assetContainers.main;
-				console.log(mainContainer);
-				mainContainer.contentWidth = expandedSettings['Width'];
-				mainContainer.x = (targetWindow.innerWidth - 320) / 2;
-				mainContainer.y = (targetWindow.innerHeight - 480) / 2;
-				
-				mainContainer.contentHeight = expandedSettings['Height'];
-			})();
-			*/
-			this.adResize();
-		}
-
-   };
-
-   targetWindow.adtechCallbackInstances = targetWindow.adtechCallbackInstances || [];
-   var instanceIndex = targetWindow.adtechCallbackInstances.length;
-   targetWindow.adtechCallbackInstances[instanceIndex] =
-       new targetWindow.com.adtech.AdtechCustomAd$AD_ID$();
-
-   targetWindow.adtechAdCallback = targetWindow.adtechAdCallback || {};
-   targetWindow.adtechAdCallback[adConfig.adServerVars.uid] =
-       targetWindow.adtechCallbackInstances[instanceIndex];
+    adResize: function () {
+      var M = this.utils.getViewportDims().w;
+      var J = this.utils.getViewportDims().h;
+      var I = 320;
+      var H = 480;
+      var L = (M - I) / 2;
+      var K = (J - H) / 2;
+      this.mainContainer.x = 0;
+      this.mainContainer.y = 0;
+      this.mainContainer.div.style.top = (this.mainContainer.floatOffsetTop + K) + "px";
+      this.mainContainer.div.style.left = L + "px"
+    },
+    pageLoadHandler: function () {
+      //this.adResize();
+      var self = this;
+      setTimeout(function() {
+        console.log('[MY] Page Load Handler CUSTOMAD');
+        self.advert.eventBus.dispatchEvent(new self.richMediaEvent('hello'));
+      }, 1000);
+      // ADTECH.event('hello');
+    }
+  };
+  E.adtechCallbackInstances = E.adtechCallbackInstances || [];
+  var C = E.adtechCallbackInstances.length;
+  E.adtechCallbackInstances[C] = new E.com.adtech.AdtechCustomAd{{tokens.canvasID}}();
+  E.adtechAdCallback = E.adtechAdCallback || {};
+  E.adtechAdCallback[D.adServerVars.uid] = E.adtechCallbackInstances[C]
+})(adtechAdConfig);
+(function (D) {
+  if (!D.initOverride) {
+    var B = "{{tokens.rmURL}}";
+    if (D.adServerVars.servingProto === "https") {
+      var E = ["baseURL", "assetBaseURL"];
+      for (var C = 0; C < E.length; C++) {
+        var G = D.adServerVars[E[C]];
+        if (G) {
+          D.adServerVars[E[C]] = G.replace(/^http:\/\/[-a-z0-9\.]*\//i, "https://secure-ads.pictela.net/")
+        }
+      }
+      B = "{{tokens.rmURL}}"
+    }
+    var H = (D.mraidCompatible)
+      ? "MRAID"
+      : "";
+    var F = B + "adtechRichMediaLib" + H + "_2_53_3.js";
+    D.rmLibUrl = F;
+    if (!window.adtechAdManager_2_53_3) {
+      adtechAdQueue = window.adtechAdQueue || [];
+      adtechAdQueue.push(D);
+      if (!window.adtechAdManagerReqs || !window.adtechAdManagerReqs["2_53_3"]) {
+        adtechAdManagerReqs = window.adtechAdManagerReqs || {};
+        adtechAdManagerReqs["2_53_3"] = true;
+        var A = "scr";
+        document.write("<" + A + 'ipt type="text/javascript" src="' + F + '"></' + A + "ipt>")
+      }
+    } else {
+      adtechAdManager_2_53_3.registerAd(D)
+    }
+  }
 })(adtechAdConfig);

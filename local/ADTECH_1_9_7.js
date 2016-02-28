@@ -2463,7 +2463,6 @@ com.adtech.Core.prototype.setRmLibVersionInfo = function() {
 // Event handlers
 
 com.adtech.Core.prototype.coreEventHandler = function(eventType, properties) {
-  console.log('>>> '+eventType);
   switch (eventType) {
     case com.adtech.RichMediaEvent.READY:
       if (this.domLoaded) {
@@ -2499,7 +2498,6 @@ com.adtech.Core.prototype.domLoadHandler = function() {
 }
 
 com.adtech.Core.prototype.postMessageHandler = function(event) {
-  console.log(event);
   var messageObj = this.constructMessageObject(event.data);
   var messageData = (messageObj.vars) ? messageObj.vars : messageObj.payload;
   switch (messageObj.cmd) {

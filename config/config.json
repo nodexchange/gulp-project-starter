@@ -2,7 +2,8 @@
   "tokens": {
     "rmURL": "./../local/",
     "coreURL": "./../local/ADTECH_1_9_7.js",
-    "assetsURL": "./",
+    "assetsURL": "http://localhost:3000/deploy/",
+    "canvasID": "212253",
     "size": "320x50",
     "Copyrights": "Copyright 2010-2014 AOL Platforms.",
     "Author": "Martin Wojtala"

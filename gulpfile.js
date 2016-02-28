@@ -108,6 +108,7 @@ gulp.task('page-includer', ['clean-temp'], function(){
 
 // Build page simulation with RichMediaLib and customAd.js
 gulp.task('build-page-html', ['page-includer'], function() {
+  gulp.watch(['./extras/**.*'], ['build-page-html', reload]);
   return gulp.src(['./temp/index.html'])
     .pipe(gulp.dest(dest));
 });

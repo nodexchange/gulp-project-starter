@@ -1,3 +1,8 @@
+try {
+
+} catch (e) {
+  console.log('eR  : '+e);
+}
 'use strict';
 @@include('./src/scripts/common/header.js');
 @@include('./src/scripts/common/settings.js');

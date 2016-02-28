@@ -14,52 +14,32 @@
         padding: 0;
         background: #ccc;
       }
+
     </style>
   </head>
   <body>
 
-    <div id="test">
-      <script type='text/javascript'>
+    <div id="adPreview">
+      <script type="text/javascript">
         adtechCanvasAdPreview = true;
-        var com = com || {};
-        com.adtech = com.adtech || {};
-        com.adtech.debugLogger_2_53_3 = com.adtech.debugLogger;
+        try {
+          console.log('212253', '[Peform] Mobile Web - Video Interstitial - Excusive - M.Sites');
+        } catch (e) {}
 
-        var adtechAdConfig =  @@include('./extras/adConfig.json');
-        adtechAdConfig.preview = true;
-        adtechAdConfig.overrides = adtechAdConfig.overrides || {};
-        adtechAdConfig.overrides["displayWindowTarget"] = self;
-        @@include('./extras/customAd.js');
-        (function(D) {
-          if (!D.initOverride) {
-            var B = "{{tokens.rmURL}}";
-            if (D.adServerVars.servingProto === "https") {
-              var E = ["baseURL", "assetBaseURL"];
-              for (var C = 0; C < E.length; C++) {
-                var G = D.adServerVars[E[C]];
-                if (G) {
-                  D.adServerVars[E[C]] = G.replace(/^http:\/\/[-a-z0-9\.]*\//i, "https://secure-ads.pictela.net/")
-                }
-              }
-              B = "https://secure-ads.pictela.net/rm/lib/richmedia/"
-            }
-            var H = (D.mraidCompatible) ? "MRAID" : "";
-            var F = B + "adtechRichMediaLib" + H + "_2_53_3.js";
-            D.rmLibUrl = F;
-            if (!window.adtechAdManager_2_53_3) {
-              adtechAdQueue = window.adtechAdQueue || [];
-              adtechAdQueue.push(D);
-              if (!window.adtechAdManagerReqs || !window.adtechAdManagerReqs["2_53_3"]) {
-                adtechAdManagerReqs = window.adtechAdManagerReqs || {};
-                adtechAdManagerReqs["2_53_3"] = true;
-                var A = "scr";
-                document.write("<" + A + 'ipt type="text/javascript" src="' + F + '"></' + A + "ipt>")
-              }
-            } else {
-              adtechAdManager_2_53_3.registerAd(D)
-            }
-          }
-        })(adtechAdConfig);
+        var rmLibVersion = '2.53.3'.split('.');
+        var rmlib_major_version = rmLibVersion[0];
+        var rmlib_minor_version = rmLibVersion[1];
+        var revision = rmLibVersion[2];
+        if (rmlib_major_version <= 2 && rmlib_minor_version < 5) {
+          var adtechAdCallback = adtechAdCallback || {};
+          //adtechAdCallback[1456688358438] = new com.adtech.AdPreviewCallbackHandler();
+        } else {
+          var adtechAdCallbacks = adtechAdCallbacks || {};
+          adtechAdCallbacks[1456688358438] = adtechAdCallbacks[1456688358438] || [];
+          //adtechAdCallbacks[1456688358438].push(new com.adtech.AdPreviewCallbackHandler());
+        }
+        var adtechAdConfig =   @@include('./extras/adConfig.json');
+      @@include('./extras/customAd.js');
       </script>
     </div>
   </body>

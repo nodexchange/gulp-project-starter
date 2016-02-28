@@ -1,3 +1,8 @@
+try {
+
+} catch (e) {
+  console.log('eR  : '+e);
+}
 'use strict';
 /**
  * Mobile Responsive Interstitial
@@ -144,10 +149,13 @@ $1CRI.core.prototype = {
 };
 ADTECH.ready(['SmartVideoPlayer/1.1.1/SmartVideoPlayer'], function() {
   'use strict'
-  console.log('HERE');
-	this.RI();
+  console.log(' ADTECH READY HERE');
+	$1CRI.core();
 });
-console.log('H<<>>');
+
+ADTECH.addEventListener('hello', function() {
+  console.log('HELLOOOOO');
+});
 ;
 
 /* =====================================================
