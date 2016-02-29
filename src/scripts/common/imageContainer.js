@@ -1,34 +1,38 @@
-var $1CRI = $1CRI || {};
-
-$1CRI.imageContainer = function() {
-  var expW = expandedSettings.Width;
-  var expH = expandedSettings.Height;
-  if (contractImg) {
-    setVisible(contractImg, false);
+$1CRI.imageContainer = function(dimensions, settings) {
+  this.utils = $1CRI.utils;
+  var clickable = settings.Clickable;
+  var defaultWidth = settings['Default Width'];
+  var defaultHeight = settings['Default Height'];
+  var scaleToFit = settings['Scale to Fit'];
+  this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  if (scaleToFit) {
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
-  if (!expandImg) {
-    expandImg = createImg(expandedSettings.Image, expW, expH);
-    expandImg.onclick = clickHandler;
-  } else {
-    setVisible(expandImg, true);
-    setVisible(contractBtn, true);
+  if (settings.Clickable === true || settings.Clickable === 'true') {
+    this.image.style.cursor = 'pointer';
   }
+  return this;
 };
-$1CRI.imageContainer.protype = {
-  setVisible: function(elem, show) {
+$1CRI.imageContainer.prototype = {
+  setVisible: function(show) {
     if (show === true) {
-      elem.style.display = '';
+      this.image.style.display = '';
     } else {
-      elem.style.display = 'none';
+      this.image.style.display = 'none';
     }
   },
-  createImg: function(fileSrc, w, h, handler, container) {
+  getImage: function() {
+    return this.image;
+  },
+  createImg: function(fileSrc, width, height) {
     var img = document.createElement('img');
     img.src = fileSrc;
     // Forced for retina display
-    img.width = w;
-    img.height = h;
-    container.appendChild(img);
+    img.width = width;
+    img.height = height;
     return img;
+  },
+  updateSize: function(dimensions) {
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
 };

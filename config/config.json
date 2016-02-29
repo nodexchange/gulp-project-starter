@@ -5,31 +5,41 @@
     "assetsURL": "http://localhost:3000/deploy/",
     "canvasID": "212253",
     "size": "320x50",
+    "adWidth": "100",
+    "adHeight": "100",
+    "unit": "%",
     "Copyrights": "Copyright 2010-2014 AOL Platforms.",
     "Author": "Martin Wojtala"
   },
   "mainFile": "mobileResponsive.html",
   "contentProperties": {
-    "Collapsed Image": "",
-    "Enable Video Player": true,
-    "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;n",
-    "Expanded Settings": {
-      "Start Expanded": true,
-      "Close Button Image": "closeButton_100x100.png",
-      "Image": "320x480.jpg",
-      "Width": 320,
-      "Height": 480
+    "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;",
+    "Image": {
+      "Source": "images/320x480.jpg",
+      "Clickable": "true",
+      "Scale to Fit": "true",
+      "Default Width":"320",
+      "Default Height":"480"
     },
-    "Video Player": {
+    "CloseButton": {
+      "top": -18,
+      "right": -18,
+      "Close Button Image": "closeButton_100x100.png"
+    },
+    "VideoPlayer": {
+      "Enabled": "true",
+      "Clickable": "true",
+      "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;",
       "Volume": "0.2",
-      "MP4 File": "Kadjar_10_OPO_070116.mp4",
+      "MP4 File": "images/Kadjar_10_OPO_070116.mp4",
       "Preview Image": "",
       "End Image": "",
       "Auto Play": true,
-      "Height": 180,
+      "Layout": "Fluid||Fixed",
+      "Height": 170,
       "Width": 320,
       "X": 0,
-      "Y": 190,
+      "Y": 40,
       "WEBM File": ""
     }
   },

@@ -88,7 +88,7 @@ gulp.task('default', function(callback) {
    Build Tasks
 ======================================================== */
 
-gulp.task('build', ['build-js', 'build-css', 'build-sass', 'build-markup', 'build-images', 'build-fonts', 'build-assets', 'build-page-html']);
+gulp.task('build', ['observe-config', 'build-js', 'build-css', 'build-sass', 'build-markup', 'build-images', 'build-fonts', 'build-assets', 'build-page-html']);
 
 gulp.task('clean', function() {
   return gulp.src(dest, {read: false})
@@ -99,9 +99,14 @@ gulp.task('clean-temp', function() {
   return del(['./temp']);
 });
 
+/* OBSERVE CONFIG */
+gulp.task('observe-config', function() {
+  gulp.watch(['./config/**.*'], ['build', reload]);
+});
+
 gulp.task('page-includer', ['clean-temp'], function(){
   return gulp.src(['./extras/index.html'])
-    .pipe(includer())
+    .pipe(includer({prefix:'$'}))
     .pipe(replace({global:config}))
     .pipe(gulp.dest('./temp'));
 });
@@ -118,7 +123,7 @@ gulp.task('build-page-html', ['page-includer'], function() {
 gulp.task('build-js', ['lint-js'], function() {
   gulp.watch([src + '/scripts/**/*.js'], ['build-js', reload]);
   return gulp.src([src + '/scripts/*.js'])
-    .pipe(includer())
+    .pipe(includer({prefix:'$'}))
     .pipe(replace({global:config}))
     .pipe(sourcemaps.init())
     .pipe(concat(settings.jsConcatTo))
@@ -149,7 +154,7 @@ gulp.task('lint-js', function() {
 
 // Copy & Minify Css
 gulp.task('build-css', function() {
-  gulp.watch([src + '/styles/**/*.css'], ['build-css', 'build-less', 'build-sass', reload]);
+  gulp.watch([src + '/styles/**/*.css'], ['build-css', 'build-sass', reload]);
   return gulp.src([src + '/styles/**/[!_]*.css'])
     .pipe(changed(dest + '/styles'))
     .pipe(gulp.dest(dest + '/styles'))

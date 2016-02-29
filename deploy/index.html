@@ -97,17 +97,17 @@
   "assetContainers": {
     "main": {
       "type": "floatingDiv",
-      "width": 320,
-      "height": 480,
-      "contentWidth": 320,
-      "contentHeight": 480,
-      "contentWidthUnit": "px",
-      "contentHeightUnit": "px",
+      "width": 100,
+      "height": 100,
+      "contentWidth": 100,
+      "contentHeight": 100,
+      "contentWidthUnit": "%",
+      "contentHeightUnit": "%",
       "xRel": "pageLeft",
       "yRel": "pageTop",
       "x": 0,
       "y": 0,
-      "renderEvent": "serve",
+      "renderEvent": "pageLoad",
       "content": "mobileResponsive.html",
       "contentType": "html",
       "zIndex": 99999,
@@ -115,8 +115,8 @@
       "pluginVersion": 0.0,
       "contractedY": 0,
       "contractedX": 0,
-      "contractedWidth": 320,
-      "contractedHeight": 480,
+      "contractedWidth": 100,
+      "contractedHeight": 100,
       "isExpandable": true,
       "startContracted": false,
       "stickyX": true,
@@ -157,7 +157,7 @@
   "contentVariables": {
     "QRUrl": "http://aol.it/1Qc4X0e"
   },
-  "contentProperties":  {"Collapsed Image":"","Enable Video Player":true,"Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;n","Expanded Settings":{"Start Expanded":true,"Close Button Image":"closeButton_100x100.png","Image":"320x480.jpg","Width":320,"Height":480},"Video Player":{"Volume":"0.2","MP4 File":"Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Height":180,"Width":320,"X":0,"Y":190,"WEBM File":""}} ,
+  "contentProperties":  {"Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Image":{"Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"},"CloseButton":{"top":-18,"right":-18,"Close Button Image":"closeButton_100x100.png"},"VideoPlayer":{"Enabled":"true","Clickable":"true","Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Volume":"0.2","MP4 File":"images/Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Layout":"Fluid||Fixed","Height":170,"Width":320,"X":0,"Y":40,"WEBM File":""}},
   "dataFeeds": {},
   "screenGrabs": {},
   "polls": {},
@@ -540,6 +540,15 @@
       "custom": true,
       "video": true,
       "isLoggable": true
+    }, {
+      "id": 0,
+      "plid": 309888212,
+      "name": "viewport",
+      "cumulative": true,
+      "interaction": true,
+      "custom": true,
+      "video": true,
+      "isLoggable": true
     }
   ],
   "timers": [
@@ -594,11 +603,12 @@
   }
 };
 ;
-      adtechAdConfig.preview = true;
+        adtechAdConfig.preview = true;
 adtechAdConfig.overrides = adtechAdConfig.overrides || {};
 adtechAdConfig.overrides["displayWindowTarget"] = self;
+/* // For resopnsive
 (function () {
-  var B = adtechAdConfig.contentProperties["Expanded Settings"];
+  var B = adtechAdConfig.contentProperties["ExpandedSettings"];
   console.log(adtechAdConfig);
   var A = adtechAdConfig.assetContainers.main;
   A.contentWidth = B.Width;
@@ -606,6 +616,7 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
   A.y = (window.innerHeight - 480) / 2;
   A.contentHeight = B.Height
 })();
+*/
 (function (D) {
   var F = false;
   for (var G in D.assetContainers) {
@@ -644,17 +655,19 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
           H.eventBus.dispatchEvent("stateChange")
         })
       }
-      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this, this.adResize));
-      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this, this.adResize));
-      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this, this.adResize));
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this, this.viewportResizeHandler));
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this, this.viewportResizeHandler));
+      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this, this.viewportResizeHandler));
       if (this.globalEventBus.pageLoaded) {
         this.pageLoadHandler()
       } else {
         this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD, this.utils.createClosure(this, this.pageLoadHandler))
       }
+
+      this.advert.eventBus.addEventListener('viewport', this.utils.createClosure(this, this.sendViewportDims));
     },
     createEventRecord: function () {
-      ADTECH.event("stateChange")
+      ADTECH.event("stateChange");
     },
     adResize: function () {
       var M = this.utils.getViewportDims().w;
@@ -668,14 +681,22 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
       this.mainContainer.div.style.top = (this.mainContainer.floatOffsetTop + K) + "px";
       this.mainContainer.div.style.left = L + "px"
     },
+    viewportResizeHandler: function(event) {
+      if (!event.meta) {
+        var viewportEvent = new this.richMediaEvent("viewport");
+        viewportEvent.meta = {dims: this.utils.getViewportDims(), type:'update'};
+        this.advert.eventBus.dispatchEvent(viewportEvent);
+      }
+    },
+    sendViewportDims: function(event) {
+      if (event.meta.type === 'request') {
+        var viewportEvent = new this.richMediaEvent("viewport");
+        viewportEvent.meta = {dims: this.utils.getViewportDims(), type:'response'};
+        this.advert.eventBus.dispatchEvent(viewportEvent);
+      }
+    },
     pageLoadHandler: function () {
       //this.adResize();
-      var self = this;
-      setTimeout(function() {
-        console.log('[MY] Page Load Handler CUSTOMAD');
-        self.advert.eventBus.dispatchEvent(new self.richMediaEvent('hello'));
-      }, 1000);
-      // ADTECH.event('hello');
     }
   };
   E.adtechCallbackInstances = E.adtechCallbackInstances || [];

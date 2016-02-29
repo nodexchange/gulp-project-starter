@@ -1,8 +1,9 @@
 adtechAdConfig.preview = true;
 adtechAdConfig.overrides = adtechAdConfig.overrides || {};
 adtechAdConfig.overrides["displayWindowTarget"] = self;
+/* // For resopnsive
 (function () {
-  var B = adtechAdConfig.contentProperties["Expanded Settings"];
+  var B = adtechAdConfig.contentProperties["ExpandedSettings"];
   console.log(adtechAdConfig);
   var A = adtechAdConfig.assetContainers.main;
   A.contentWidth = B.Width;
@@ -10,6 +11,7 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
   A.y = (window.innerHeight - 480) / 2;
   A.contentHeight = B.Height
 })();
+*/
 (function (D) {
   var F = false;
   for (var G in D.assetContainers) {
@@ -48,17 +50,19 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
           H.eventBus.dispatchEvent("stateChange")
         })
       }
-      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this, this.adResize));
-      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this, this.adResize));
-      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this, this.adResize));
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_RESIZE, this.utils.createClosure(this, this.viewportResizeHandler));
+      this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_SCROLL, this.utils.createClosure(this, this.viewportResizeHandler));
+      this.globalEventBus.addEventListener(this.richMediaEvent.ORIENTATION_CHANGE, this.utils.createClosure(this, this.viewportResizeHandler));
       if (this.globalEventBus.pageLoaded) {
         this.pageLoadHandler()
       } else {
         this.globalEventBus.addEventListener(this.richMediaEvent.PAGE_LOAD, this.utils.createClosure(this, this.pageLoadHandler))
       }
+
+      this.advert.eventBus.addEventListener('viewport', this.utils.createClosure(this, this.sendViewportDims));
     },
     createEventRecord: function () {
-      ADTECH.event("stateChange")
+      ADTECH.event("stateChange");
     },
     adResize: function () {
       var M = this.utils.getViewportDims().w;
@@ -72,14 +76,22 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
       this.mainContainer.div.style.top = (this.mainContainer.floatOffsetTop + K) + "px";
       this.mainContainer.div.style.left = L + "px"
     },
+    viewportResizeHandler: function(event) {
+      if (!event.meta) {
+        var viewportEvent = new this.richMediaEvent("viewport");
+        viewportEvent.meta = {dims: this.utils.getViewportDims(), type:'update'};
+        this.advert.eventBus.dispatchEvent(viewportEvent);
+      }
+    },
+    sendViewportDims: function(event) {
+      if (event.meta.type === 'request') {
+        var viewportEvent = new this.richMediaEvent("viewport");
+        viewportEvent.meta = {dims: this.utils.getViewportDims(), type:'response'};
+        this.advert.eventBus.dispatchEvent(viewportEvent);
+      }
+    },
     pageLoadHandler: function () {
       //this.adResize();
-      var self = this;
-      setTimeout(function() {
-        console.log('[MY] Page Load Handler CUSTOMAD');
-        self.advert.eventBus.dispatchEvent(new self.richMediaEvent('hello'));
-      }, 1000);
-      // ADTECH.event('hello');
     }
   };
   E.adtechCallbackInstances = E.adtechCallbackInstances || [];

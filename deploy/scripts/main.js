@@ -1,163 +1,3 @@
-try {
-
-} catch (e) {
-  console.log('eR  : '+e);
-}
-'use strict';
-/**
- * Mobile Responsive Interstitial
- * AOL Platforms 02/2016
- * http://one.aol.com/
- * version 0.1
- *
- * @author: Marcin Wojtala
- */
-var com = com || {};
-com.aol = com.aol || {};
-com.aol.one = com.aol.one || {};
-com.aol.one.ri = com.aol.one.ri || {};
-var $1CRI = com.aol.one.ri;
-;
-$1CRI.Settings = function () {
-  this.contractedImage = ADTECH.getContent('Collapsed Image', '320x50.gif');
-  this.click = ADTECH.getContent('Clickthrough', 'http://www.adtech.com');
-  this.enableVideo = ADTECH.getContent('Enable Video Player', true);
-  this.expandedSettings = ADTECH.getContent('Expanded Settings', {'Image':'320x480.gif', 'Width':'320', 'Height':'480', 'Close Button Image': 'closeButton_100x100.png', 'Start Expanded': false});
-  this.videoContent = ADTECH.getContent('Video Player', { 'X':'22', 'Y':'150', 'Width':'275', 'Height':'150', 'Preview Image':'270x180.gif', 'End Image':'270x180.gif', 'MP4 File':'sample-video.mp4', 'WEBM File':'sample-video.webm', 'Auto Play':'true', 'Volume':'0.7'});
-};
-
-// module.exports = $1CRI.Settings;
-;
-var $1CRI = $1CRI || {};
-
-$1CRI.imageContainer = function() {
-  var expW = expandedSettings.Width;
-  var expH = expandedSettings.Height;
-  if (contractImg) {
-    setVisible(contractImg, false);
-  }
-  if (!expandImg) {
-    expandImg = createImg(expandedSettings.Image, expW, expH);
-    expandImg.onclick = clickHandler;
-  } else {
-    setVisible(expandImg, true);
-    setVisible(contractBtn, true);
-  }
-};
-$1CRI.imageContainer.protype = {
-  setVisible: function(elem, show) {
-    if (show === true) {
-      elem.style.display = '';
-    } else {
-      elem.style.display = 'none';
-    }
-  },
-  createImg: function(fileSrc, w, h, handler, container) {
-    var img = document.createElement('img');
-    img.src = fileSrc;
-    // Forced for retina display
-    img.width = w;
-    img.height = h;
-    container.appendChild(img);
-    return img;
-  }
-};
-;
-var $1CRI = $1CRI || {};
-$1CRI.smartVideo = $1CRI.smartVideo || {};
-
-$1CRI.closeButton = function() {
-
-};
-
-$1CRI.closeButton.protype = {
-  setupVideo: function() {
-    if (!contractBtn) {
-      contractBtn = document.createElement('img');
-      contractBtn.src = expandedSettings['Close Button Image'];
-      contractBtn.style.position = 'absolute';
-      contractBtn.style.right = '4px';
-      contractBtn.style.top = '4px';
-      contractBtn.onclick = onStateChangeHandler;
-      container.appendChild(contractBtn);
-    }
-  },
-  clickHandler: function() {
-    ADTECH.close();
-  }
-};
-;
-var $1CRI = $1CRI || {};
-$1CRI.smartVideo = $1CRI.smartVideo || {};
-
-$1CRI.smartVideo.core = function() {
-
-};
-
-$1CRI.smartVideo.core.protype = {
-  setupVideo: function() {
-    vidPrevImg = videoContent['Preview Image'];
-    vidEndImg = videoContent['End Image'];
-    vid = document.createElement('div');
-    ADTECH.registerVideoPlayer(vid, 'Video');
-    container.appendChild(vid);
-  	var smartPlayer = ADTECH.modules.SmartVideoPlayer.createPlayer({
-      container: vid,
-      width: videoContent.Width,
-      height: videoContent.Height,
-      poster: vidPrevImg,
-  		autoplay: false,
-      src: {
-        mp4: videoContent['MP4 File'],
-        webm: videoContent['WEBM File']
-      }
-    });
-    vid.style.position = 'absolute';
-    vid.style.left = videoContent.X + 'px';
-    vid.style.top = videoContent.Y + 'px';
-    if (videoContent['Auto Play'] === true || videoContent['Auto Play'] === 'true') {
-     smartPlayer.play({auto: true});
-    } else {
-     smartPlayer.pause();
-  	}
-  }
-};
-;
-
-/* Core */
-var $1CRI = $1CRI || {};
-$1CRI.core = function() {
-  this.addSmartListeners();
-  this.initialize();
-};
-
-$1CRI.core.prototype = {
-  init: function() {
-    var self = this;
-    self.container = document.createElement('div');
-    self.container.style.position = 'relative';
-    document.body.appendChild(self.container);
-    var bgImage = $1CRI.imageContainer(self.settings, self.container);
-    if (enableVideo === true) {
-      var smartPlayer = $1CRI.smartPlayer.core(self.settings, self.container);
-    }
-    var closeBtn = $1CRI.closeBtn(self.container);
-  },
-  clickHandler: function() {
-    ADTECH.dynamicClick('Clickthrough', click);
-  }
-};
-ADTECH.ready(['SmartVideoPlayer/1.1.1/SmartVideoPlayer'], function() {
-  'use strict'
-  console.log(' ADTECH READY HERE');
-	$1CRI.core();
-});
-
-ADTECH.addEventListener('hello', function() {
-  console.log('HELLOOOOO');
-});
-;
-
 /* =====================================================
    _hidden.js
 ======================================================== */
@@ -175,3 +15,269 @@ ADTECH.addEventListener('hello', function() {
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
 //})(jQuery); // jQuery no conflict
+
+'use strict';
+// JSLint
+/*global
+ADTECH, $1CRI, $include
+*/
+/**
+ * Mobile Responsive Interstitial
+ * AOL Platforms 02/2016
+ * http://one.aol.com/
+ * version 0.1
+ *
+ * @author: Marcin Wojtala
+ */
+var com = com || {};
+com.aol = com.aol || {};
+com.aol.one = com.aol.one || {};
+com.aol.one.ri = com.aol.one.ri || {};
+var $1CRI = com.aol.one.ri;
+;
+$1CRI.utils = {
+  aspectRatio: 1,
+  getCurrentAspectRatio: function() {
+    return $1CRI.utils.aspectRatio;
+  },
+  resizeImagePerRatio: function(element, maxWidth, maxHeight) {
+    var ratio = 0; // Used for aspect ratio
+    var width = element.width // Current image width
+    var height = element.height // Current image height
+
+    var resizeType = 'portrait';
+    if (maxWidth<maxHeight) {
+      resizeType = 'landscape';
+    }
+    if (resizeType == 'landscape') {
+      // Check if the current width is larger than the max
+      if (width < maxWidth) {
+        ratio = maxWidth / width; // get ratio for scaling image
+        $1CRI.utils.aspectRatio = ratio;
+        element.width = maxWidth; // Set new width
+        element.height = height * ratio; // Scale height based on ratio
+        height = height * ratio; // Reset height to match scaled image
+        width = width * ratio; // Reset width to match scaled image
+      }
+    } else {
+      // Check if current height is larger than max
+      if (height < maxHeight) {
+        ratio = maxHeight / height; // get ratio for scaling image
+        $1CRI.utils.aspectRatio = ratio;
+        element.height = maxHeight; // Set new height
+        element.width = width * ratio; // Scale width based on ratio
+        width = width * ratio; // Reset width to match scaled image
+        height = height * ratio; // Reset height to match scaled image
+      }
+    }
+  }
+}
+;
+$1CRI.Settings = function () {
+  this.Clickthrough = ADTECH.getContent('Clickthrough', 'https://ad.doubleclick.net/ddm/clk/300049047;127005073;');
+  this.Image = ADTECH.getContent('Image', {"Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"});
+  this.CloseButton = ADTECH.getContent('CloseButton', {"top":-18,"right":-18,"Close Button Image":"closeButton_100x100.png"});
+  this.VideoPlayer = ADTECH.getContent('VideoPlayer', {"Enabled":"true","Clickable":"true","Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Volume":"0.2","MP4 File":"images/Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Layout":"Fluid||Fixed","Height":170,"Width":320,"X":0,"Y":40,"WEBM File":""});
+};
+
+// module.exports = $1CRI.Settings;
+;
+$1CRI.imageContainer = function(dimensions, settings) {
+  this.utils = $1CRI.utils;
+  var clickable = settings.Clickable;
+  var defaultWidth = settings['Default Width'];
+  var defaultHeight = settings['Default Height'];
+  var scaleToFit = settings['Scale to Fit'];
+  this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  if (scaleToFit) {
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
+  }
+  if (settings.Clickable === true || settings.Clickable === 'true') {
+    this.image.style.cursor = 'pointer';
+  }
+  return this;
+};
+$1CRI.imageContainer.prototype = {
+  setVisible: function(show) {
+    if (show === true) {
+      this.image.style.display = '';
+    } else {
+      this.image.style.display = 'none';
+    }
+  },
+  getImage: function() {
+    return this.image;
+  },
+  createImg: function(fileSrc, width, height) {
+    var img = document.createElement('img');
+    img.src = fileSrc;
+    // Forced for retina display
+    img.width = width;
+    img.height = height;
+    return img;
+  },
+  updateSize: function(dimensions) {
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
+  }
+};
+;
+var $1CRI = $1CRI || {};
+$1CRI.smartVideo = $1CRI.smartVideo || {};
+
+$1CRI.closeButton = function(settings) {
+  this.settings = settings;
+  var button = this.setupButton();
+  return button;
+};
+
+$1CRI.closeButton.prototype = {
+  setupButton: function() {
+      var contractBtn = document.createElement('img');
+      contractBtn.className = 'closeButton';
+      contractBtn.src = this.settings['Close Button Image'];
+      contractBtn.style.position = 'absolute';
+      contractBtn.style.right = '4px';
+      contractBtn.style.top = '4px';
+      contractBtn.onclick = function() {
+
+      };
+      return contractBtn;
+  },
+  clickHandler: function() {
+    ADTECH.close();
+  }
+};
+;
+var $1CRI = $1CRI || {};
+$1CRI.smartVideo = $1CRI.smartVideo || {};
+
+$1CRI.smartVideo.core = function(settings, container) {
+  this.utils = $1CRI.utils;
+  this.videoContainer = document.createElement('div');
+  this.videoContainer.id = 'VideoContainer' + (Math.random() * 1000);
+  container.appendChild(this.videoContainer);
+  this.settings = settings;
+  this.originalWidth = this.settings.Width;
+  this.originalHeight = this.settings.Height;
+  this.currentAspectRatio = 1;
+  try {
+    this.setupVideo();
+  } catch (e) {
+    console.log('[SMART PLAYER ERROR]' +e);
+  }
+  return this;
+};
+
+$1CRI.smartVideo.core.prototype = {
+  getVideoContainer: function() {
+    return this.videoContainer;
+  },
+  setupVideo: function() {
+    var self = this;
+    ADTECH.registerVideoPlayer(self.videoContainer, 'Video');
+    if (self.settings.Layout === 'Fluid' || self.settings.Layout === 'Fluid||Fixed') {
+      self.settings.Width = self.originalWidth * self.utils.aspectRatio;
+      self.settings.Height = self.originalHeight * self.utils.aspectRatio;
+      self.currentAspectRatio = self.utils.aspectRatio;
+    }
+  	var smartPlayer = ADTECH.modules.SmartVideoPlayer.createPlayer({
+      container: self.videoContainer,
+      width: self.settings.Width,
+      height: self.settings.Height,
+      poster: self.settings['Preview Image'],
+  		autoplay: false,
+      src: {
+        mp4: self.settings['MP4 File'],
+        webm: self.settings['WEBM File']
+      }
+    });
+    self.videoContainer.style.position = 'absolute';
+    if (self.settings.Layout === 'Fluid' || self.settings.Layout === 'Fluid||Fixed') {
+      self.videoContainer.style.left = self.settings.X + '%';
+      self.videoContainer.style.top = self.settings.Y + '%';
+    } else {
+      self.videoContainer.style.left = self.settings.X + 'px';
+      self.videoContainer.style.top = self.settings.Y + 'px';
+    }
+    if (self.settings['Auto Play'] === true || self.settings['Auto Play'] === 'true') {
+     smartPlayer.play({auto: true});
+    } else {
+     smartPlayer.pause();
+  	}
+  },
+  updateSize: function() {
+    var self = this;
+    if (self.utils.aspectRatio != self.currentAspectRatio) {
+      self.currentAspectRatio = self.utils.aspectRatio;
+      self.settings.Width = self.settings.Width * (self.utils.aspectRatio*0.9986);
+      self.settings.Height = self.settings.Height * (self.utils.aspectRatio*0.9986);
+      console.log(self.videoContainer.firstChild);
+      self.videoContainer.firstChild.style.width = self.settings.Width + 'px';
+      self.videoContainer.firstChild.style.height = self.settings.Height + 'px';
+    }
+  }
+};
+;
+
+/* Core */
+$1CRI.core = function() {
+  this.settings = new $1CRI.Settings();
+  this.screenDimensions = {};
+  this.addCoreEventListeners();
+  this.requestViewportDimensions();
+};
+
+$1CRI.core.prototype = {
+  init: function() {
+    var self = this;
+    self.container = document.createElement('div');
+    self.container.style.position = 'relative';
+    self.container.id = 'container';
+    document.body.appendChild(self.container);
+    var dims = self.getScreenSize();
+    self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    self.backgroundImage.getImage().addEventListener('click', function() {
+      self.clickHandler();
+    });
+    self.container.appendChild(self.backgroundImage.getImage());
+    if (self.settings.VideoPlayer.Enabled === true || self.settings.VideoPlayer.Enabled === 'true') {
+      self.smartPlayer = new $1CRI.smartVideo.core(self.settings.VideoPlayer, self.container);
+    }
+    var closeButton = new $1CRI.closeButton(self.container, self.settings.CloseButton);
+    self.container.appendChild(closeButton);
+  },
+  requestViewportDimensions: function() {
+    ADTECH.event('viewport', {type:'request'});
+  },
+  addCoreEventListeners: function() {
+    var self = this;
+    ADTECH.addEventListener('viewport', function(event) {
+      if (event.meta.type === 'response') {
+        self.screenDimensions = event.meta.dims;
+        self.init();
+      } else if (event.meta.type === 'update'){
+        self.screenDimensions = event.meta.dims;
+        self.backgroundImage.updateSize(self.screenDimensions);
+        self.smartPlayer.updateSize();
+
+      }
+    });
+  },
+  getScreenSize: function() {
+    return this.screenDimensions;
+  },
+  clickHandler: function() {
+    ADTECH.dynamicClick('Clickthrough', this.settings.Clickthrough);
+  }
+};
+ADTECH.ready(['SmartVideoPlayer/1.1.1/SmartVideoPlayer'], function() {
+  'use strict'
+	new $1CRI.core();
+});
+
+/*
+ADTECH.addEventListener('hello', function() {
+  console.log('HELLOOOOO');
+});
+*/
+;
