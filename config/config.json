@@ -22,9 +22,9 @@
       "Default Height":"480"
     },
     "CloseButton": {
-      "top": -18,
-      "right": -18,
-      "Close Button Image": "closeButton_100x100.png"
+      "Width": 36,
+      "Height": 36,
+      "Close Button Image": "images/fancybox_sprite.svg"
     },
     "VideoPlayer": {
       "Enabled": "true",
