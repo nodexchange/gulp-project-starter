@@ -10,4 +10,5 @@ node_modules
 bower_components
 
 # custom
-dist
+dist# temp# deploy
+ 
