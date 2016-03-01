@@ -61,7 +61,6 @@ $1CRI.smartVideo.core.prototype = {
       self.currentAspectRatio = self.utils.aspectRatio;
       self.settings.Width = self.settings.Width * (self.utils.aspectRatio*0.9986);
       self.settings.Height = self.settings.Height * (self.utils.aspectRatio*0.9986);
-      console.log(self.videoContainer.firstChild);
       self.videoContainer.firstChild.style.width = self.settings.Width + 'px';
       self.videoContainer.firstChild.style.height = self.settings.Height + 'px';
     }

@@ -1,8 +1,10 @@
-body {
+html, body {
   background: #dddddd;
+  margin: 0;
+  padding: 0;
 }
 
-#closeButton {
+.closeButton {
   position: absolute;
   top: -18px;
   right: -18px;
@@ -10,5 +12,4 @@ body {
   height: 36px;
   cursor: pointer;
   z-index: 998040;
-  background-image: url("images/fancybox_sprite.svg");
 }

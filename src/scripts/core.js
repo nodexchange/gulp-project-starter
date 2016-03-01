@@ -34,8 +34,13 @@ $1CRI.core.prototype = {
     if (self.settings.VideoPlayer.Enabled === true || self.settings.VideoPlayer.Enabled === 'true') {
       self.smartPlayer = new $1CRI.smartVideo.core(self.settings.VideoPlayer, self.container);
     }
-    var closeButton = new $1CRI.closeButton(self.container, self.settings.CloseButton);
-    self.container.appendChild(closeButton);
+    self.closeButton = new $1CRI.closeButton(self.settings.CloseButton);
+    self.container.appendChild(self.closeButton.getButton());
+    self.closeButton.updatePosition(self.backgroundImage.getImage().width, 3);
+
+    var containerInfo = self.container.getBoundingClientRect();
+    var positionInfo = self.backgroundImage.getImage().getBoundingClientRect();
+    alert(containerInfo.width + ' : ' + positionInfo.width);
   },
   requestViewportDimensions: function() {
     ADTECH.event('viewport', {type:'request'});
@@ -50,6 +55,7 @@ $1CRI.core.prototype = {
         self.screenDimensions = event.meta.dims;
         self.backgroundImage.updateSize(self.screenDimensions);
         self.smartPlayer.updateSize();
+        self.closeButton.updatePosition(self.backgroundImage.getImage().width, 3);
 
       }
     });

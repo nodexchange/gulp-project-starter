@@ -4,21 +4,33 @@ $1CRI.smartVideo = $1CRI.smartVideo || {};
 $1CRI.closeButton = function(settings) {
   this.settings = settings;
   var button = this.setupButton();
-  return button;
+  return this;
 };
 
 $1CRI.closeButton.prototype = {
   setupButton: function() {
-      var contractBtn = document.createElement('img');
-      contractBtn.className = 'closeButton';
-      contractBtn.src = this.settings['Close Button Image'];
-      contractBtn.style.position = 'absolute';
-      contractBtn.style.right = '4px';
-      contractBtn.style.top = '4px';
-      contractBtn.onclick = function() {
+      this.closeButtonContainer = document.createElement('div');
+      this.closeButtonContainer.className = 'closeButton';
+      this.closeButtonContainer.style.left = '320px';
+      this.closeButtonContainer.style.top = '4px';
+      this.closeButtonContainer.style.position = 'absolute';
+      this.closeButtonContainer.style.overflow = 'hidden';
+      this.closeButtonContainer.style.width = this.settings.Width+'px';
+      this.closeButtonContainer.style.height = this.settings.Height+'px';
 
-      };
-      return contractBtn;
+      var closeImage = document.createElement('img');
+      closeImage.src = this.settings['Close Button Image'];
+      this.closeButtonContainer.onclick = this.clickHandler;
+      this.closeButtonContainer.appendChild(closeImage);
+      return this.closeButtonContainer;
+  },
+  getButton: function() {
+    return this.closeButtonContainer;
+  },
+  updatePosition: function(left, top) {
+    var leftValue = left - this.settings.Width;
+    this.closeButtonContainer.style.left = leftValue + 'px';
+    this.closeButtonContainer.style.top = top + 'px';
   },
   clickHandler: function() {
     ADTECH.close();
