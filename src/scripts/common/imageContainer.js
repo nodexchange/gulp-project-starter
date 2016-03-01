@@ -11,6 +11,7 @@ $1CRI.imageContainer = function(dimensions, settings) {
   if (settings.Clickable === true || settings.Clickable === 'true') {
     this.image.style.cursor = 'pointer';
   }
+  this.image.className = 'imageContainer';
   return this;
 };
 $1CRI.imageContainer.prototype = {

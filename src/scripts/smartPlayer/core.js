@@ -5,6 +5,7 @@ $1CRI.smartVideo.core = function(settings, container) {
   this.utils = $1CRI.utils;
   this.videoContainer = document.createElement('div');
   this.videoContainer.id = 'VideoContainer' + (Math.random() * 1000);
+  this.videoContainer.className = 'videoContainer';
   container.appendChild(this.videoContainer);
   this.settings = settings;
   this.originalWidth = this.settings.Width;

@@ -14,24 +14,21 @@ $1CRI.utils = {
     }
     if (resizeType == 'landscape') {
       // Check if the current width is larger than the max
-      if (width < maxWidth) {
+      /*if (width < maxWidth) {
         ratio = maxWidth / width; // get ratio for scaling image
         $1CRI.utils.aspectRatio = ratio;
         element.width = maxWidth; // Set new width
         element.height = height * ratio; // Scale height based on ratio
         height = height * ratio; // Reset height to match scaled image
         width = width * ratio; // Reset width to match scaled image
-      }
+      }*/
     } else {
-      // Check if current height is larger than max
-      if (height < maxHeight) {
-        ratio = maxHeight / height; // get ratio for scaling image
-        $1CRI.utils.aspectRatio = ratio;
-        element.height = maxHeight; // Set new height
-        element.width = width * ratio; // Scale width based on ratio
-        width = width * ratio; // Reset width to match scaled image
-        height = height * ratio; // Reset height to match scaled image
-      }
+      ratio = maxHeight / height; // get ratio for scaling image
+      $1CRI.utils.aspectRatio = ratio;
+      element.height = maxHeight; // Set new height
+      element.width = width * ratio; // Scale width based on ratio
+      width = width * ratio; // Reset width to match scaled image
+      height = height * ratio; // Reset height to match scaled image
     }
   }
 }

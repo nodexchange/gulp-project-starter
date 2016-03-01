@@ -40,7 +40,11 @@ $1CRI.core.prototype = {
 
     var containerInfo = self.container.getBoundingClientRect();
     var positionInfo = self.backgroundImage.getImage().getBoundingClientRect();
-    alert(containerInfo.width + ' : ' + positionInfo.width);
+    //alert(containerInfo.width + ' : ' + positionInfo.width);
+    self.container.style.left = ((containerInfo.width - positionInfo.width) / 2) + 'px';
+    self.container.style.top = 0;
+
+
   },
   requestViewportDimensions: function() {
     ADTECH.event('viewport', {type:'request'});
@@ -56,6 +60,8 @@ $1CRI.core.prototype = {
         self.backgroundImage.updateSize(self.screenDimensions);
         self.smartPlayer.updateSize();
         self.closeButton.updatePosition(self.backgroundImage.getImage().width, 3);
+        var positionInfo = self.backgroundImage.getImage().getBoundingClientRect();
+        self.container.style.left = ((self.screenDimensions.w - positionInfo.width) / 2) + 'px';
 
       }
     });
