@@ -1,5 +1,5 @@
 ADTECH.ready(['SmartVideoPlayer/1.1.1/SmartVideoPlayer'], function() {
-  'use strict'
+  'use strict';
 	new $1CRI.core();
 });
 

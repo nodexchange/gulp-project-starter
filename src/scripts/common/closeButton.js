@@ -1,9 +1,6 @@
-var $1CRI = $1CRI || {};
-$1CRI.smartVideo = $1CRI.smartVideo || {};
-
 $1CRI.closeButton = function(settings) {
   this.settings = settings;
-  var button = this.setupButton();
+  this.setupButton();
   return this;
 };
 

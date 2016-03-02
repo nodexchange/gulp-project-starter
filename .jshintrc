@@ -72,6 +72,8 @@
 
     // Custom Globals
     "globals": {
+      "$1CRI"       : false,
+      "ADTECH"      : false,
       "angular"     : false,
       "define"      : false,
       "require"     : false,

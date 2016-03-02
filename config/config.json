@@ -27,7 +27,7 @@
       "Close Button Image": "images/fancybox_sprite.svg"
     },
     "VideoPlayer": {
-      "Enabled": "true",
+      "Enabled": "false",
       "Clickable": "true",
       "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;",
       "Volume": "0.2",

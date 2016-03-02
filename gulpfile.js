@@ -105,6 +105,8 @@ gulp.task('observe-config', function() {
 });
 
 gulp.task('page-includer', ['clean-temp'], function(){
+  console.log('CONFIG');
+  console.log(config);
   return gulp.src(['./extras/index.html'])
     .pipe(includer({prefix:'$'}))
     .pipe(replace({global:config}))

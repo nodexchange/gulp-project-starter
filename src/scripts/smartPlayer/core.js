@@ -1,4 +1,3 @@
-var $1CRI = $1CRI || {};
 $1CRI.smartVideo = $1CRI.smartVideo || {};
 
 $1CRI.smartVideo.core = function(settings, container) {
@@ -58,7 +57,7 @@ $1CRI.smartVideo.core.prototype = {
   },
   updateSize: function() {
     var self = this;
-    if (self.utils.aspectRatio != self.currentAspectRatio) {
+    if (self.utils.aspectRatio !== self.currentAspectRatio) {
       self.currentAspectRatio = self.utils.aspectRatio;
       self.settings.Width = self.settings.Width * (self.utils.aspectRatio*0.9986);
       self.settings.Height = self.settings.Height * (self.utils.aspectRatio*0.9986);

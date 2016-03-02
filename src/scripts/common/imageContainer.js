@@ -1,6 +1,5 @@
 $1CRI.imageContainer = function(dimensions, settings) {
   this.utils = $1CRI.utils;
-  var clickable = settings.Clickable;
   var defaultWidth = settings['Default Width'];
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
@@ -21,6 +20,9 @@ $1CRI.imageContainer.prototype = {
     } else {
       this.image.style.display = 'none';
     }
+  },
+  isClickable: function() {
+    return this.settings.Clickable;
   },
   getImage: function() {
     return this.image;

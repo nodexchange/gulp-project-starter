@@ -5,14 +5,14 @@ $1CRI.utils = {
   },
   resizeImagePerRatio: function(element, maxWidth, maxHeight) {
     var ratio = 0; // Used for aspect ratio
-    var width = element.width // Current image width
-    var height = element.height // Current image height
+    var width = element.width; // Current image width
+    var height = element.height; // Current image height
 
     var resizeType = 'portrait';
     if (maxWidth<maxHeight) {
       resizeType = 'landscape';
     }
-    if (resizeType == 'landscape') {
+    if (resizeType === 'landscape') {
       // Check if the current width is larger than the max
       /*if (width < maxWidth) {
         ratio = maxWidth / width; // get ratio for scaling image
@@ -31,4 +31,4 @@ $1CRI.utils = {
       height = height * ratio; // Reset height to match scaled image
     }
   }
-}
+};
