@@ -75,7 +75,6 @@ var includer = require('gulp-file-includer');
 
 var del = require('del');
 var vinylPaths = require('vinyl-paths');
-var config = require('./config/config.json');
 /* =====================================================
    Default Task
 ======================================================== */
@@ -105,8 +104,7 @@ gulp.task('observe-config', function() {
 });
 
 gulp.task('page-includer', ['clean-temp'], function(){
-  console.log('CONFIG');
-  console.log(config);
+  var config = require('./config/config.json');
   return gulp.src(['./extras/index.html'])
     .pipe(includer({prefix:'$'}))
     .pipe(replace({global:config}))
@@ -123,6 +121,7 @@ gulp.task('build-page-html', ['page-includer'], function() {
 
 // Concat & Uglify & Sourcemaps Js
 gulp.task('build-js', ['lint-js'], function() {
+  var config = require('./config/config.json');
   gulp.watch([src + '/scripts/**/*.js'], ['build-js', reload]);
   return gulp.src([src + '/scripts/*.js'])
     .pipe(includer({prefix:'$'}))
@@ -183,6 +182,7 @@ gulp.task('build-sass', function() {
 // Copy Markup
 gulp.task('build-markup', function() {
   var markupFiles = [src + '/*', src + '/**/*.{html,php}', src + '/.htaccess'];
+  var config = require('./config/config.json');
   gulp.watch(markupFiles, ['build-markup', reload]);
   return gulp.src(markupFiles)
     .pipe(changed(dest))
