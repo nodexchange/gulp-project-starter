@@ -7,6 +7,7 @@
   <head>
     <title>MRAID - Expandable Video</title>
     <meta charset="UTF-8">
+    <meta HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
     <style>
       html,
       body {
@@ -15,9 +16,101 @@
         background: #ccc;
       }
 
+      nav {
+        display: block;
+        position: absolute;
+        top:0px;
+        right:0px;
+    width: 40px;
+    height: 40px;
+    text-align: right;
+    z-index: 300002;
+}
+nav a {
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+    margin: 8px;
+}
+#panel {
+    position: absolute;
+    right: 0;
+    width: 70%;
+    top: 0;
+    bottom: 0;
+    box-shadow: 0px 0px 15px black;
+    background: white;
+    padding: 10px;
+    -webkit-transform-origin: 100% 50%;
+    -webkit-transform: scaleX(0.00001);
+    -webkit-transition: -webkit-transform 0.2s ease-in-out;
+    outline: 0;
+    z-index: 300005;
+}
+#panel:target {
+    -webkit-transform: scaleX(1);
+}
+
+.clearDebugButton {
+  text-decoration: none;
+  color: black;
+  position: fixed;
+  top:35px;
+  right: 17px;
+  cursor: pointer;
+}
+.closeDebugButton {
+  text-decoration: none;
+  color: black;
+  position: fixed;
+  top:10px;
+  right: 15px;
+}
+
+.textClass {
+ -webkit-animation: color_change 1s infinite alternate;
+ -moz-animation: color_change 1s infinite alternate;
+ -ms-animation: color_change 1s infinite alternate;
+ -o-animation: color_change 1s infinite alternate;
+ animation: color_change 1s infinite alternate;
+}
+
+@-webkit-keyframes color_change {
+ from { color: white; }
+ to { color: green; }
+}
+@-moz-keyframes color_change {
+ from { color: white; }
+ to { color: green; }
+}
+@-ms-keyframes color_change {
+ from { color: white; }
+ to { color: green; }
+}
+@-o-keyframes color_change {
+ from { color: white; }
+ to { color: green; }
+}
+@keyframes color_change {
+ from { color: white; }
+ to { color: green; }
+}
+#logs {
+  overflow:scroll;
+  height: 95%;
+}
+p {
+  margin-top: 0px;
+  margin-bottom: 0px;
+  font-size: 14px;
+}
     </style>
   </head>
   <body>
+    <!-- new change -->
+    <nav>
+      <a href="#panel" class="textClass">&#9776;</a>
+    </nav>
 
     <div id="adPreview">
       <script type="text/javascript">
@@ -39,7 +132,7 @@
           //adtechAdCallbacks[1456688358438].push(new com.adtech.AdPreviewCallbackHandler());
         }
         var adtechAdConfig =   {
-  "canvasId": 212253,
+  "canvasId": 228178,
   "liveStatsEnabled": false,
   "servicesUrl": "http://canvas-services.adtech.de/",
   "dynamic": false,
@@ -53,7 +146,7 @@
   },
   "adServerVars": {
     "uid": "1456688358438",
-    "id": "212253",
+    "id": "228178",
     "bannerId": "_ADBNID_",
     "bannerUid": "_ADBNUID_",
     "networkId": "_ADNETID_",
@@ -157,7 +250,7 @@
   "contentVariables": {
     "QRUrl": "http://aol.it/1Qc4X0e"
   },
-  "contentProperties":  {"Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Image":{"Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"},"CloseButton":{"top":-18,"right":-18,"Close Button Image":"closeButton_100x100.png"},"VideoPlayer":{"Enabled":"true","Clickable":"true","Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Volume":"0.2","MP4 File":"images/Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Layout":"Fluid||Fixed","Height":170,"Width":320,"X":0,"Y":40,"WEBM File":""}},
+  "contentProperties":  {"Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Image":{"Use Image":"false","Color":"#000000","Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"},"CloseButton":{"Width":36,"Height":36,"Close Button Image":"images/fancybox_sprite.svg"},"VideoPlayer":{"Enabled":"true","Clickable":"true","Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Volume":"0.2","MP4 File":"images/Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Layout":"Fluid||Fixed","Height":170,"Width":320,"X":0,"Y":40,"WEBM File":""}},
   "dataFeeds": {},
   "screenGrabs": {},
   "polls": {},
@@ -636,8 +729,8 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
     : self;
   E.com = E.com || {};
   E.com.adtech = E.com.adtech || {};
-  E.com.adtech.AdtechCustomAd212253 = function () {};
-  E.com.adtech.AdtechCustomAd212253.prototype = {
+  E.com.adtech.AdtechCustomAd228178 = function () {};
+  E.com.adtech.AdtechCustomAd228178.prototype = {
     init: function (I) {
       if (!I.richView) {
         return
@@ -701,7 +794,7 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
   };
   E.adtechCallbackInstances = E.adtechCallbackInstances || [];
   var C = E.adtechCallbackInstances.length;
-  E.adtechCallbackInstances[C] = new E.com.adtech.AdtechCustomAd212253();
+  E.adtechCallbackInstances[C] = new E.com.adtech.AdtechCustomAd228178();
   E.adtechAdCallback = E.adtechAdCallback || {};
   E.adtechAdCallback[D.adServerVars.uid] = E.adtechCallbackInstances[C]
 })(adtechAdConfig);
@@ -740,5 +833,32 @@ adtechAdConfig.overrides["displayWindowTarget"] = self;
 ;
       </script>
     </div>
+    <div id="panel">
+      <a class="closeDebugButton" href="#">&#10006;</a>
+      <h3>Debug Menu</h3>
+      <div id="logs"></div>
+      <div class="clearDebugButton">&#8709;</a>
+    </div>
+    <script>
+    if (typeof console  != "undefined")
+    if (typeof console.log != 'undefined')
+        console.olog = console.log;
+    else
+        console.olog = function() {};
+
+console.log = function(message) {
+    console.olog(message);
+    var logs = document.getElementById('logs');
+    var p = document.createElement('p');
+    p.innerHTML = message;
+    logs.appendChild(p);
+};
+console.error = console.debug = console.info =  console.log;
+var clear = document.getElementsByClassName('clearDebugButton')[0];
+clear.addEventListener('click', function() {
+  var logs = document.getElementById('logs');
+  logs.innerHTML = '';
+});
+    </script>
   </body>
 </html>

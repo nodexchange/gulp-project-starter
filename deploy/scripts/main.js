@@ -42,41 +42,38 @@ $1CRI.utils = {
   },
   resizeImagePerRatio: function(element, maxWidth, maxHeight) {
     var ratio = 0; // Used for aspect ratio
-    var width = element.width // Current image width
-    var height = element.height // Current image height
+    var width = element.width; // Current image width
+    var height = element.height; // Current image height
 
     var resizeType = 'portrait';
     if (maxWidth<maxHeight) {
       resizeType = 'landscape';
     }
-    if (resizeType == 'landscape') {
+    if (resizeType === 'landscape') {
       // Check if the current width is larger than the max
-      if (width < maxWidth) {
+      /*if (width < maxWidth) {
         ratio = maxWidth / width; // get ratio for scaling image
         $1CRI.utils.aspectRatio = ratio;
         element.width = maxWidth; // Set new width
         element.height = height * ratio; // Scale height based on ratio
         height = height * ratio; // Reset height to match scaled image
         width = width * ratio; // Reset width to match scaled image
-      }
+      }*/
     } else {
-      // Check if current height is larger than max
-      if (height < maxHeight) {
-        ratio = maxHeight / height; // get ratio for scaling image
-        $1CRI.utils.aspectRatio = ratio;
-        element.height = maxHeight; // Set new height
-        element.width = width * ratio; // Scale width based on ratio
-        width = width * ratio; // Reset width to match scaled image
-        height = height * ratio; // Reset height to match scaled image
-      }
+      ratio = maxHeight / height; // get ratio for scaling image
+      $1CRI.utils.aspectRatio = ratio;
+      element.height = maxHeight; // Set new height
+      element.width = width * ratio; // Scale width based on ratio
+      width = width * ratio; // Reset width to match scaled image
+      height = height * ratio; // Reset height to match scaled image
     }
   }
-}
+};
 ;
 $1CRI.Settings = function () {
   this.Clickthrough = ADTECH.getContent('Clickthrough', 'https://ad.doubleclick.net/ddm/clk/300049047;127005073;');
-  this.Image = ADTECH.getContent('Image', {"Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"});
-  this.CloseButton = ADTECH.getContent('CloseButton', {"top":-18,"right":-18,"Close Button Image":"closeButton_100x100.png"});
+  this.Image = ADTECH.getContent('Image', {"Use Image":"false","Color":"#000000","Source":"images/320x480.jpg","Clickable":"true","Scale to Fit":"true","Default Width":"320","Default Height":"480"});
+  this.CloseButton = ADTECH.getContent('CloseButton', {"Width":36,"Height":36,"Close Button Image":"images/fancybox_sprite.svg"});
   this.VideoPlayer = ADTECH.getContent('VideoPlayer', {"Enabled":"true","Clickable":"true","Clickthrough":"https://ad.doubleclick.net/ddm/clk/300049047;127005073;","Volume":"0.2","MP4 File":"images/Kadjar_10_OPO_070116.mp4","Preview Image":"","End Image":"","Auto Play":true,"Layout":"Fluid||Fixed","Height":170,"Width":320,"X":0,"Y":40,"WEBM File":""});
 };
 
@@ -84,17 +81,22 @@ $1CRI.Settings = function () {
 ;
 $1CRI.imageContainer = function(dimensions, settings) {
   this.utils = $1CRI.utils;
-  var clickable = settings.Clickable;
   var defaultWidth = settings['Default Width'];
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
-  this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+
+  if(settings['Use Image'] == 'true'){
+    this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  } else {  
+    this.image = this.createBgColor(settings.Color, defaultWidth, defaultHeight);
+  }
   if (scaleToFit) {
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
   if (settings.Clickable === true || settings.Clickable === 'true') {
     this.image.style.cursor = 'pointer';
   }
+  this.image.className = 'imageContainer';
   return this;
 };
 $1CRI.imageContainer.prototype = {
@@ -104,6 +106,9 @@ $1CRI.imageContainer.prototype = {
     } else {
       this.image.style.display = 'none';
     }
+  },
+  isClickable: function() {
+    return this.settings.Clickable;
   },
   getImage: function() {
     return this.image;
@@ -116,45 +121,62 @@ $1CRI.imageContainer.prototype = {
     img.height = height;
     return img;
   },
+  //create a background container with color
+  createBgColor: function(color, width, height) {
+    var bgColor = document.createElement('div');
+    bgColor.style.backgroundColor = color;
+    bgColor.style.width = width +'px';
+    bgColor.style.height = height + 'px';  
+    return bgColor; 
+  },
   updateSize: function(dimensions) {
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
 };
 ;
-var $1CRI = $1CRI || {};
-$1CRI.smartVideo = $1CRI.smartVideo || {};
-
 $1CRI.closeButton = function(settings) {
   this.settings = settings;
-  var button = this.setupButton();
-  return button;
+  this.setupButton();
+  return this;
 };
 
 $1CRI.closeButton.prototype = {
   setupButton: function() {
-      var contractBtn = document.createElement('img');
-      contractBtn.className = 'closeButton';
-      contractBtn.src = this.settings['Close Button Image'];
-      contractBtn.style.position = 'absolute';
-      contractBtn.style.right = '4px';
-      contractBtn.style.top = '4px';
-      contractBtn.onclick = function() {
+      this.closeButtonContainer = document.createElement('div');
+      this.closeButtonContainer.className = 'closeButton';
+      this.closeButtonContainer.style.left = '320px';
+      this.closeButtonContainer.style.top = '4px';
+      this.closeButtonContainer.style.position = 'absolute';
+      this.closeButtonContainer.style.overflow = 'hidden';
+      this.closeButtonContainer.style.width = this.settings.Width+'px';
+      this.closeButtonContainer.style.height = this.settings.Height+'px';
 
-      };
-      return contractBtn;
+      var closeImage = document.createElement('img');
+      closeImage.src = this.settings['Close Button Image'];
+      this.closeButtonContainer.onclick = this.clickHandler;
+      this.closeButtonContainer.appendChild(closeImage);
+      return this.closeButtonContainer;
+  },
+  getButton: function() {
+    return this.closeButtonContainer;
+  },
+  updatePosition: function(left, top) {
+    var leftValue = left - this.settings.Width;
+    this.closeButtonContainer.style.left = leftValue + 'px';
+    this.closeButtonContainer.style.top = top + 'px';
   },
   clickHandler: function() {
     ADTECH.close();
   }
 };
 ;
-var $1CRI = $1CRI || {};
 $1CRI.smartVideo = $1CRI.smartVideo || {};
 
 $1CRI.smartVideo.core = function(settings, container) {
   this.utils = $1CRI.utils;
   this.videoContainer = document.createElement('div');
   this.videoContainer.id = 'VideoContainer' + (Math.random() * 1000);
+  this.videoContainer.className = 'videoContainer';
   container.appendChild(this.videoContainer);
   this.settings = settings;
   this.originalWidth = this.settings.Width;
@@ -207,11 +229,10 @@ $1CRI.smartVideo.core.prototype = {
   },
   updateSize: function() {
     var self = this;
-    if (self.utils.aspectRatio != self.currentAspectRatio) {
+    if (self.utils.aspectRatio !== self.currentAspectRatio) {
       self.currentAspectRatio = self.utils.aspectRatio;
       self.settings.Width = self.settings.Width * (self.utils.aspectRatio*0.9986);
       self.settings.Height = self.settings.Height * (self.utils.aspectRatio*0.9986);
-      console.log(self.videoContainer.firstChild);
       self.videoContainer.firstChild.style.width = self.settings.Width + 'px';
       self.videoContainer.firstChild.style.height = self.settings.Height + 'px';
     }
@@ -235,7 +256,11 @@ $1CRI.core.prototype = {
     self.container.id = 'container';
     document.body.appendChild(self.container);
     var dims = self.getScreenSize();
-    self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    if(self.settings.Image['Use Image'] == 'true'){
+      self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    } else {
+      self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    }    
     self.backgroundImage.getImage().addEventListener('click', function() {
       self.clickHandler();
     });
@@ -243,8 +268,17 @@ $1CRI.core.prototype = {
     if (self.settings.VideoPlayer.Enabled === true || self.settings.VideoPlayer.Enabled === 'true') {
       self.smartPlayer = new $1CRI.smartVideo.core(self.settings.VideoPlayer, self.container);
     }
-    var closeButton = new $1CRI.closeButton(self.container, self.settings.CloseButton);
-    self.container.appendChild(closeButton);
+    self.closeButton = new $1CRI.closeButton(self.settings.CloseButton);
+    self.container.appendChild(self.closeButton.getButton());
+    self.closeButton.updatePosition(self.backgroundImage.getImage().width, 3);
+
+    var containerInfo = self.container.getBoundingClientRect();
+    var positionInfo = self.backgroundImage.getImage().getBoundingClientRect();
+    //alert(containerInfo.width + ' : ' + positionInfo.width);
+    self.container.style.left = ((containerInfo.width - positionInfo.width) / 2) + 'px';
+    self.container.style.top = 0;
+
+
   },
   requestViewportDimensions: function() {
     ADTECH.event('viewport', {type:'request'});
@@ -259,6 +293,9 @@ $1CRI.core.prototype = {
         self.screenDimensions = event.meta.dims;
         self.backgroundImage.updateSize(self.screenDimensions);
         self.smartPlayer.updateSize();
+        self.closeButton.updatePosition(self.backgroundImage.getImage().width, 3);
+        var positionInfo = self.backgroundImage.getImage().getBoundingClientRect();
+        self.container.style.left = ((self.screenDimensions.w - positionInfo.width) / 2) + 'px';
 
       }
     });
@@ -271,7 +308,7 @@ $1CRI.core.prototype = {
   }
 };
 ADTECH.ready(['SmartVideoPlayer/1.1.1/SmartVideoPlayer'], function() {
-  'use strict'
+  'use strict';
 	new $1CRI.core();
 });
 

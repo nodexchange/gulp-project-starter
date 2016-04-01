@@ -3,7 +3,12 @@ $1CRI.imageContainer = function(dimensions, settings) {
   var defaultWidth = settings['Default Width'];
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
-  this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+
+  if(settings['Use Image'] == 'true'){
+    this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  } else {  
+    this.image = this.createBgColor(settings.Color, defaultWidth, defaultHeight);
+  }
   if (scaleToFit) {
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
@@ -34,6 +39,14 @@ $1CRI.imageContainer.prototype = {
     img.width = width;
     img.height = height;
     return img;
+  },
+  //create a background container with color
+  createBgColor: function(color, width, height) {
+    var bgColor = document.createElement('div');
+    bgColor.style.backgroundColor = color;
+    bgColor.style.width = width +'px';
+    bgColor.style.height = height + 'px';  
+    return bgColor; 
   },
   updateSize: function(dimensions) {
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
