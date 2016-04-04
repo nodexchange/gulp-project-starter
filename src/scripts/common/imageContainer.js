@@ -4,12 +4,13 @@ $1CRI.imageContainer = function(dimensions, settings) {
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
 
-  if(settings['Use Image'] == 'true'){
+  if(settings['Use Image'] == 'true' || settings['Use Image'] == true){
     this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
-  } else {  
+  } else { console.log('[Juti] settings juti ELSE !!!!!', settings, 'dimensions !!!!', dimensions); 
     this.image = this.createBgColor(settings.Color, defaultWidth, defaultHeight);
   }
-  if (scaleToFit) {
+  //this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  if (scaleToFit) { console.log('dimensions', dimensions.w, dimensions.h); 
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
   if (settings.Clickable === true || settings.Clickable === 'true') {
@@ -29,10 +30,10 @@ $1CRI.imageContainer.prototype = {
   isClickable: function() {
     return this.settings.Clickable;
   },
-  getImage: function() {
-    return this.image;
+  getImage: function() {console.log('this.image', this.image);
+    return this.image; 
   },
-  createImg: function(fileSrc, width, height) {
+  createImg: function(fileSrc, width, height) { console.log('width', width, 'height', height); 
     var img = document.createElement('img');
     img.src = fileSrc;
     // Forced for retina display
@@ -44,11 +45,13 @@ $1CRI.imageContainer.prototype = {
   createBgColor: function(color, width, height) {
     var bgColor = document.createElement('div');
     bgColor.style.backgroundColor = color;
-    bgColor.style.width = width +'px';
-    bgColor.style.height = height + 'px';  
+  
+    bgColor.style.width = width+'px';
+    bgColor.style.height = height+'px'; 
+
     return bgColor; 
   },
-  updateSize: function(dimensions) {
+  updateSize: function(dimensions) { console.log('[juti] dimensions!!!!! ', dimensions); //juti
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
 };

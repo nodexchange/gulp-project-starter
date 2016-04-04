@@ -44,10 +44,15 @@ $1CRI.utils = {
     var ratio = 0; // Used for aspect ratio
     var width = element.width; // Current image width
     var height = element.height; // Current image height
+    if(element.nodeName == 'DIV') {
+      width = element.offsetWidth; 
+      height = element.offsetHeight;
+    }
 
     var resizeType = 'portrait';
     if (maxWidth<maxHeight) {
       resizeType = 'landscape';
+      console.log('[j] landscape'); 
     }
     if (resizeType === 'landscape') {
       // Check if the current width is larger than the max
@@ -59,11 +64,20 @@ $1CRI.utils = {
         height = height * ratio; // Reset height to match scaled image
         width = width * ratio; // Reset width to match scaled image
       }*/
-    } else {
+    } else { 
+      console.log('[juti] update resize' + element.nodeName); 
       ratio = maxHeight / height; // get ratio for scaling image
       $1CRI.utils.aspectRatio = ratio;
-      element.height = maxHeight; // Set new height
-      element.width = width * ratio; // Scale width based on ratio
+      if(element.nodeName == 'DIV') {
+        var newWidth = (width * ratio);
+        console.log('[j]', newWidth);
+        element.style.height = maxHeight + 'px';
+        element.style.width = newWidth + 'px';
+      } else {
+        element.height = maxHeight; // Set new height
+        element.width = width * ratio; // Scale width based on ratio
+      }
+
       width = width * ratio; // Reset width to match scaled image
       height = height * ratio; // Reset height to match scaled image
     }
@@ -85,12 +99,13 @@ $1CRI.imageContainer = function(dimensions, settings) {
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
 
-  if(settings['Use Image'] == 'true'){
+  if(settings['Use Image'] == 'true' || settings['Use Image'] == true){
     this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
-  } else {  
+  } else { console.log('[Juti] settings juti ELSE !!!!!', settings, 'dimensions !!!!', dimensions); 
     this.image = this.createBgColor(settings.Color, defaultWidth, defaultHeight);
   }
-  if (scaleToFit) {
+  //this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  if (scaleToFit) { console.log('dimensions', dimensions.w, dimensions.h); 
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
   if (settings.Clickable === true || settings.Clickable === 'true') {
@@ -110,10 +125,10 @@ $1CRI.imageContainer.prototype = {
   isClickable: function() {
     return this.settings.Clickable;
   },
-  getImage: function() {
-    return this.image;
+  getImage: function() {console.log('this.image', this.image);
+    return this.image; 
   },
-  createImg: function(fileSrc, width, height) {
+  createImg: function(fileSrc, width, height) { console.log('width', width, 'height', height); 
     var img = document.createElement('img');
     img.src = fileSrc;
     // Forced for retina display
@@ -125,11 +140,13 @@ $1CRI.imageContainer.prototype = {
   createBgColor: function(color, width, height) {
     var bgColor = document.createElement('div');
     bgColor.style.backgroundColor = color;
-    bgColor.style.width = width +'px';
-    bgColor.style.height = height + 'px';  
+  
+    bgColor.style.width = width+'px';
+    bgColor.style.height = height+'px'; 
+
     return bgColor; 
   },
-  updateSize: function(dimensions) {
+  updateSize: function(dimensions) { console.log('[juti] dimensions!!!!! ', dimensions); //juti
     this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
   }
 };
@@ -256,11 +273,12 @@ $1CRI.core.prototype = {
     self.container.id = 'container';
     document.body.appendChild(self.container);
     var dims = self.getScreenSize();
-    if(self.settings.Image['Use Image'] == 'true'){
+    if(self.settings.Image['Use Image'] == 'true' || self.settings.Image['Use Image'] == true){
       self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
     } else {
       self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
-    }    
+    }
+    
     self.backgroundImage.getImage().addEventListener('click', function() {
       self.clickHandler();
     });

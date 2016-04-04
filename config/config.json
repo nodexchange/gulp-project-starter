@@ -3,7 +3,7 @@
     "rmURL": "./../local/",
     "coreURL": "./../local/ADTECH_1_9_7.js",
     "assetsURL": "http://localhost:3000/deploy/",
-    "canvasID": "212253",
+    "canvasID": "228178",
     "size": "320x50",
     "adWidth": "100",
     "adHeight": "100",
@@ -15,6 +15,8 @@
   "contentProperties": {
     "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;",
     "Image": {
+      "Use Image" : "false",
+      "Color" : "#000000",
       "Source": "images/320x480.jpg",
       "Clickable": "true",
       "Scale to Fit": "true",

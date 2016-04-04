@@ -26,7 +26,12 @@ $1CRI.core.prototype = {
     self.container.id = 'container';
     document.body.appendChild(self.container);
     var dims = self.getScreenSize();
-    self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    if(self.settings.Image['Use Image'] == 'true' || self.settings.Image['Use Image'] == true){
+      self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    } else {
+      self.backgroundImage = new $1CRI.imageContainer(dims, self.settings.Image);
+    }
+    
     self.backgroundImage.getImage().addEventListener('click', function() {
       self.clickHandler();
     });
