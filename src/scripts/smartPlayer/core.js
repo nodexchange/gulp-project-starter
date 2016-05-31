@@ -9,12 +9,25 @@ $1CRI.smartVideo.core = function(settings, container) {
   this.settings = settings;
   this.originalWidth = this.settings.Width;
   this.originalHeight = this.settings.Height;
-  this.currentAspectRatio = 1;
+  this.currentAspectRatioW = 1;
+  this.currentAspectRatioH = 1;
   try {
     this.setupVideo();
   } catch (e) {
     console.log('[SMART PLAYER ERROR]' +e);
   }
+  var self = this;
+  if(settings.Clickable == true || settings.Clickable == 'true') {
+    this.videoContainer.addEventListener('click', function(event) {
+      if(event.target.className.indexOf('vjs-tech') > -1) {
+        if(self.smartPlayer.player.hasStarted_ == true) {
+          ADTECH.dynamicClick('Video Clickthrough', self.settings['Clickthrough']);
+        }
+      }
+      console.log(self.smartPlayer.player.hasStarted_);
+    });
+  }
+
   return this;
 };
 
@@ -26,16 +39,17 @@ $1CRI.smartVideo.core.prototype = {
     var self = this;
     ADTECH.registerVideoPlayer(self.videoContainer, 'Video');
     if (self.settings.Layout === 'Fluid' || self.settings.Layout === 'Fluid||Fixed') {
-      self.settings.Width = self.originalWidth * self.utils.aspectRatio;
-      self.settings.Height = self.originalHeight * self.utils.aspectRatio;
-      self.currentAspectRatio = self.utils.aspectRatio;
+      self.settings.Width = self.originalWidth * self.utils.aspectRatioW;
+      self.settings.Height = self.originalHeight * self.utils.aspectRatioH;
+      self.currentAspectRatioW = self.utils.aspectRatioW;
+      self.currentAspectRatioH = self.utils.aspectRatioH;
     }
-  	var smartPlayer = ADTECH.modules.SmartVideoPlayer.createPlayer({
+  	self.smartPlayer = ADTECH.modules.SmartVideoPlayer.createPlayer({
       container: self.videoContainer,
       width: self.settings.Width,
       height: self.settings.Height,
       poster: self.settings['Preview Image'],
-  		autoplay: false,
+  		autoplay: self.settings['Auto Play'],
       src: {
         mp4: self.settings['MP4 File'],
         webm: self.settings['WEBM File']
@@ -50,17 +64,18 @@ $1CRI.smartVideo.core.prototype = {
       self.videoContainer.style.top = self.settings.Y + 'px';
     }
     if (self.settings['Auto Play'] === true || self.settings['Auto Play'] === 'true') {
-     smartPlayer.play({auto: true});
+     self.smartPlayer.play({auto: true});
     } else {
-     smartPlayer.pause();
+     self.smartPlayer.pause();
   	}
   },
   updateSize: function() {
     var self = this;
-    if (self.utils.aspectRatio !== self.currentAspectRatio) {
-      self.currentAspectRatio = self.utils.aspectRatio;
-      self.settings.Width = self.settings.Width * (self.utils.aspectRatio*0.9986);
-      self.settings.Height = self.settings.Height * (self.utils.aspectRatio*0.9986);
+    if (self.utils.aspectRatioW !== self.currentAspectRatioW || self.utils.aspectRatioH !== self.currentAspectRatioH) {
+      self.currentAspectRatioW = self.utils.aspectRatioW;
+      self.currentAspectRatioH = self.utils.aspectRatioH;
+      self.settings.Width = Math.round(self.settings.Width * (self.utils.aspectRatioW*1));
+      self.settings.Height = Math.round(self.settings.Height * (self.utils.aspectRatioH*1));
       self.videoContainer.firstChild.style.width = self.settings.Width + 'px';
       self.videoContainer.firstChild.style.height = self.settings.Height + 'px';
     }

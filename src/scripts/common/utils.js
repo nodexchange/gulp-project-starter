@@ -7,28 +7,27 @@ $1CRI.utils = {
     var ratio = 0; // Used for aspect ratio
     var width = element.width; // Current image width
     var height = element.height; // Current image height
-
-    var resizeType = 'portrait';
-    if (maxWidth<maxHeight) {
-      resizeType = 'landscape';
-    }
-    if (resizeType === 'landscape') {
-      // Check if the current width is larger than the max
-      /*if (width < maxWidth) {
-        ratio = maxWidth / width; // get ratio for scaling image
-        $1CRI.utils.aspectRatio = ratio;
-        element.width = maxWidth; // Set new width
-        element.height = height * ratio; // Scale height based on ratio
-        height = height * ratio; // Reset height to match scaled image
-        width = width * ratio; // Reset width to match scaled image
-      }*/
-    } else {
-      ratio = maxHeight / height; // get ratio for scaling image
-      $1CRI.utils.aspectRatio = ratio;
-      element.height = maxHeight; // Set new height
-      element.width = width * ratio; // Scale width based on ratio
-      width = width * ratio; // Reset width to match scaled image
-      height = height * ratio; // Reset height to match scaled image
-    }
+    var resizeType = '';
+    console.log('>>> width '+width +' height > ' + height +' maxWidth > '+ maxWidth + ' maxHeight > '+ maxHeight)
+    var dims = $1CRI.utils.calculateAspectRatioFit(width, height, maxWidth, maxHeight);
+    element.width = dims.width;
+    element.height = dims.height;
+    $1CRI.utils.aspectRatioH = dims.height / height;
+    $1CRI.utils.aspectRatioW = dims.width / width;
+    console.log($1CRI.utils.aspectRatioH + ' > '+$1CRI.utils.aspectRatioW);
+  },
+  /**
+ * Conserve aspect ratio of the orignal region. Useful when shrinking/enlarging
+ * images to fit into a certain area.
+ *
+ * @param {Number} srcWidth Source area width
+ * @param {Number} srcHeight Source area height
+ * @param {Number} maxWidth Fittable area maximum available width
+ * @param {Number} maxHeight Fittable area maximum available height
+ * @return {Object} { width, heigth }
+ */
+ calculateAspectRatioFit: function(srcWidth, srcHeight, maxWidth, maxHeight) {
+     var ratio = Math.min(maxWidth / srcWidth, maxHeight / srcHeight);
+     return { width: srcWidth*ratio, height: srcHeight*ratio };
   }
 };

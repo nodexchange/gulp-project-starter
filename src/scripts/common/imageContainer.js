@@ -4,8 +4,15 @@ $1CRI.imageContainer = function(dimensions, settings) {
   var defaultHeight = settings['Default Height'];
   var scaleToFit = settings['Scale to Fit'];
   this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
-  if (scaleToFit) {
-    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
+  if(settings['Use Image'] == 'true' || settings['Use Image'] == true){
+    //this.image.style.opacity = 1;
+  } else {
+    this.image.src = '';
+    this.image.style.backgroundColor = settings['Color'];
+  }
+  //this.image = this.createImg(settings.Source, defaultWidth, defaultHeight);
+  if (scaleToFit) { console.log('dimensions', dimensions.w, dimensions.h);
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h, dimensions.unit);
   }
   if (settings.Clickable === true || settings.Clickable === 'true') {
     this.image.style.cursor = 'pointer';
@@ -36,6 +43,6 @@ $1CRI.imageContainer.prototype = {
     return img;
   },
   updateSize: function(dimensions) {
-    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h);
+    this.utils.resizeImagePerRatio(this.image, dimensions.w, dimensions.h, dimensions.unit);
   }
 };

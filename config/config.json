@@ -13,13 +13,17 @@
   },
   "mainFile": "mobileResponsive.html",
   "contentProperties": {
+    "UnitWidth":"100%",
+    "UnitHeight":"100%",
     "Clickthrough": "https://ad.doubleclick.net/ddm/clk/300049047;127005073;",
     "Image": {
-      "Source": "images/320x480.jpg",
+      "Source": "images/mobileinterstitial_test.png",
       "Clickable": "true",
       "Scale to Fit": "true",
-      "Default Width":"320",
-      "Default Height":"480"
+      "Default Width":"1242",
+      "Default Height":"2552",
+      "Use Image":"true",
+      "Color":"#fff"
     },
     "CloseButton": {
       "Width": 36,
@@ -36,10 +40,10 @@
       "End Image": "",
       "Auto Play": true,
       "Layout": "Fluid||Fixed",
-      "Height": 170,
-      "Width": 320,
+      "Height": 698,
+      "Width": 1242,
       "X": 0,
-      "Y": 40,
+      "Y": 36,
       "WEBM File": ""
     }
   },
